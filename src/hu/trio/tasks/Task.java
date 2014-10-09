@@ -63,10 +63,13 @@ public class Task {
 		return requiredTime;
 	}
 	private void refreshReqTime() {
-		requiredTime = 0;
+//		requiredTime = 0;
+		int childRequiredTime = 0;
 		for(Task task : subTasks){
-			requiredTime += task.getRequiredTime();
+			childRequiredTime += task.getRequiredTime();
 		}
+		if(childRequiredTime > requiredTime)
+			requiredTime = childRequiredTime;
 	}
 	public void setRequiredTime(int requiredTime) {
 		this.requiredTime = requiredTime;
