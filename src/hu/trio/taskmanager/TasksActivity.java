@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+//TROLLOLOOOOO
+
 public class TasksActivity extends Activity {
 	private ArrayList<Task> tasks;
 	private Categories categories;
