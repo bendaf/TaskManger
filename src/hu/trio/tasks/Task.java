@@ -22,6 +22,8 @@ public class Task {
 	public void addToCategory(Category cat){
 		categories.add(cat);
 	}
+	
+	//valami
 	public boolean isInTheCategory(Category cat){
 		return categories.contains(cat);
 	}
