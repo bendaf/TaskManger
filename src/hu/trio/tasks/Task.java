@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import android.util.Log;
+
 public class Task {
 	
 	private static long counter;
@@ -73,8 +75,18 @@ public class Task {
 		return categories.remove(cat);
 	}
 	public void addSubTask(Task subTask){
-		childReqTime.setTime(childReqTime.getTime() + subTask.getRequiredTime().getTime());
-		subTasks.add(subTask);
+		if(subTasks.add(subTask))
+			childReqTime.setTime(childReqTime.getTime() + subTask.getRequiredTime().getTime());
+		
+	}
+	public void addSubTask(int index, Task subTask) {
+		try{
+			subTasks.add(index,subTask);
+			childReqTime.setTime(childReqTime.getTime() + subTask.getRequiredTime().getTime());
+		}catch(IndexOutOfBoundsException e){
+			Log.e("erdekel", e.getMessage());
+		}
+		
 	}
 	public ArrayList<Task> getSubTasks(){
 		return new ArrayList<Task>(subTasks);

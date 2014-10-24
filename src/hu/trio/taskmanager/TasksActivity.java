@@ -1,6 +1,5 @@
 package hu.trio.taskmanager;
 
-import hu.trio.tasks.Categories;
 import hu.trio.tasks.Category;
 import hu.trio.tasks.Task;
 
@@ -15,24 +14,27 @@ import android.view.MenuItem;
 //TROLLOLOOOOO
 
 public class TasksActivity extends Activity {
-	private ArrayList<Task> tasks;
-	private Categories categories;
+	
+	private static final class DB{
+		static ArrayList<Category> categories = new ArrayList<>();
+		static ArrayList<Task> tasks = new ArrayList<>();
+	}
+	
+	private Task currentTask;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_tasks);
 		
-		tasks = new ArrayList<>();
-		categories = new Categories();
+		currentTask = null;
 		
-		tasks.add(new Task("Bevásárlás"));
-		tasks.get(0).setRequiredTime(30);
-		tasks.add(new Task("Séta"));
+		DB.tasks.add(new Task("Bevásárlás"));
+		DB.tasks.add(new Task("Séta"));
 		
-		categories.addCategory(new Category("Otthoni"));
-		tasks.get(0).addToCategory(categories.getCategory(0));
-		Log.d("erdekel", tasks.toString());
+		DB.categories.add(new Category("Otthoni"));
+		DB.tasks.get(0).addToCategory(DB.categories.get(0));
+		Log.d("erdekel", DB.tasks.toString());
 	}
 
 	@Override
@@ -54,32 +56,47 @@ public class TasksActivity extends Activity {
 		return super.onOptionsItemSelected(item);
 	}
 	
-	public void addTask(Task task){
-		tasks.add(task);
-	}
-	
-	public void removeTask(int index){
-		tasks.remove(index);
-	}
-	
-	public void finishTask(int index){
-		tasks.get(index).setDone(true);
-	}
-	
-	public int indexOfTask(Task task){
-		return tasks.indexOf(task);
-	}
-	
-	public void replaceTask(Task task, int index){
-		if(tasks.remove(task)){
-			tasks.add(index, task);
+	public void addTask(Task parent, Task task){
+		if(parent == null){
+			DB.tasks.add(task);
+		}else{
+			parent.addSubTask(task);
 		}
 	}
-	/// Visszatér a tasks listában lévő és az adott kategóriába tartozó taskokkal.
-	public ArrayList<Task> getTasksOfCategory(Category cat){
+	
+	public void removeTask(Task parent, Task task){
+		if(parent == null){
+			DB.tasks.remove(task);
+		}else{
+			parent.removeSubTask(task);
+		}
+	}
+	
+	public void replaceTask(Task parentTask, Task task, int index){
+		if(parentTask == null){
+			if(DB.tasks.remove(task)){
+				DB.tasks.add(index, task);
+			}
+		}else{
+			if(parentTask.removeSubTask(task)){
+				parentTask.addSubTask(index, task);
+			}
+		}
+	}
+	
+	/// Visszatér a fában lévő és az adott kategóriába tartozó taskokkal.
+	public ArrayList<Task> getTasksOfCategory(Task parentTask, Category cat){
 		ArrayList<Task> reqCat = new ArrayList<>();
-		for(Task idTask : tasks){
-			if(idTask.isInTheCategory(cat))reqCat.add(idTask);
+		if(parentTask == null){
+			for(Task idTask : DB.tasks){
+				reqCat.addAll(getTasksOfCategory(idTask, cat));
+				if(idTask.isInTheCategory(cat))reqCat.add(idTask);
+			}
+		}else {
+			for(Task idTask : parentTask.getSubTasks()){
+				reqCat.addAll(getTasksOfCategory(idTask, cat));
+				if(idTask.isInTheCategory(cat))reqCat.add(idTask);
+			}
 		}
 		return reqCat;
 	}
