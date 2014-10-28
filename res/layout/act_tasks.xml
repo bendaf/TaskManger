@@ -2,23 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="hu.trio.taskmanager.TasksActivity" >
+    tools:context="hu.trio.taskmanager.TasksActivity">
 
     <RelativeLayout android:id="@+id/rtl_categories" 
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
 	    android:paddingLeft="@dimen/horizontal_margin"
 	    android:paddingRight="@dimen/horizontal_margin"
     	android:paddingTop="@dimen/vertical_margin"
         android:background="@color/gray_transparent">
         
-        <ListView 
+        <ListView android:id="@+id/lv_categories"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            
-        </ListView>
+            android:layout_height="wrap_content"
+            android:scrollbars="none"/>
     </RelativeLayout>
+    
 	<RelativeLayout android:id="@+id/rtl_tasks"
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
@@ -26,11 +26,11 @@
 	    android:paddingRight="@dimen/horizontal_margin"
 	    android:layout_below="@id/rtl_categories">
 	    
-        <ListView 
+        <ListView android:id="@+id/lv_tasks"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            
-        </ListView>
+            android:layout_height="wrap_content"
+            android:scrollbars="none"
+            android:dividerHeight="12dp"/>
 	</RelativeLayout>
     
 	<LinearLayout android:id="@+id/llt_buttons"

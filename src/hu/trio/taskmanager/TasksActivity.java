@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 //TROLLOLOOOOO
 
@@ -21,6 +22,8 @@ public class TasksActivity extends Activity {
 	}
 	
 	private Task currentTask;
+	private TaskArrayAdapter taskAdapter;
+	private ListView taskListView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +31,37 @@ public class TasksActivity extends Activity {
 		setContentView(R.layout.act_tasks);
 		
 		currentTask = null;
-		
+		taskListView = (ListView) findViewById(R.id.lv_tasks);
+        taskAdapter= new TaskArrayAdapter(getApplicationContext(), DB.tasks);
+		taskListView.setAdapter(taskAdapter);
+        
 		DB.tasks.add(new Task("Bevásárlás"));
 		DB.tasks.add(new Task("Séta"));
+		DB.tasks.add(new Task("Futás"));
+		DB.tasks.add(new Task("Alma vásárlása a kisboldban"));
+		DB.tasks.add(new Task("Krisz felköszönt"));
+		DB.tasks.add(new Task("Ajándékot venni"));
+		DB.tasks.add(new Task("Jogsi"));
+		DB.tasks.add(new Task("Szallagavató zene"));
+		DB.tasks.add(new Task("Kiskutya"));
+		DB.tasks.add(new Task("Kép nyomtat"));
+		
 		
 		DB.categories.add(new Category("Otthoni"));
+		DB.categories.add(new Category("Szülinap"));
+		DB.categories.add(new Category("Állat"));
+		DB.categories.get(0).setColor("red");
+		DB.categories.get(1).setColor("blue");
+		DB.categories.get(2).setColor("green");
 		DB.tasks.get(0).addToCategory(DB.categories.get(0));
+		DB.tasks.get(2).addToCategory(DB.categories.get(0));
+		DB.tasks.get(2).addToCategory(DB.categories.get(2));
+		DB.tasks.get(3).addToCategory(DB.categories.get(0));
+		DB.tasks.get(4).addToCategory(DB.categories.get(1));
+		DB.tasks.get(5).addToCategory(DB.categories.get(1));
+		DB.tasks.get(6).addToCategory(DB.categories.get(0));
+		DB.tasks.get(8).addToCategory(DB.categories.get(2));
+		DB.tasks.get(9).addToCategory(DB.categories.get(0));
 		Log.d("erdekel", DB.tasks.toString());
 	}
 
