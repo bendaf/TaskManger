@@ -19,8 +19,11 @@ import android.widget.TextView;
 
 public class TaskArrayAdapter extends BaseAdapter {
 
-	
-    TextView tvTaskName;
+	class VH{
+		TextView tvTaskTitle;
+		TextView tvTaskEndDate;
+		TextView tvTaskReqTime;
+	}
 	
 	private ArrayList<Task> taskList = new ArrayList<Task>();
 	private SwipeTouchListener listener;
@@ -64,17 +67,19 @@ public class TaskArrayAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        TextView tvTaskTitle = null;
+        VH taskView = new VH();
         boolean isSwiped = position == swipedPos ? true : false;
 //	    if (convertView == null) {
 			// futasi idoben betoltunk egy layout-ot a LayoutInfalter-el:
-			LayoutInflater vi = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			convertView = vi.inflate(R.layout.task_item, null);
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			convertView = inflater.inflate(R.layout.task_item, parent, false);
 			/*
 			 * Ezzel a betoltessel hatarozzuk meg, hogy milyen szerkezete legyen a lista elemeknek
 			 */
 	
-			tvTaskTitle = (TextView) convertView.findViewById(R.id.tv_taskTitle);
+			taskView.tvTaskTitle = (TextView) convertView.findViewById(R.id.tv_taskTitle);
+			taskView.tvTaskEndDate = (TextView) convertView.findViewById(R.id.tv_taskEndDate);
+			taskView.tvTaskReqTime = (TextView) convertView.findViewById(R.id.tv_taskReqTime);
 	        convertView.setOnTouchListener(listener);
 	        if(isSwiped){
 	        	listener.setSwipe(convertView,true);
@@ -85,7 +90,18 @@ public class TaskArrayAdapter extends BaseAdapter {
 //	    	tvTaskTitle = (TextView) convertView.getTag();
 //	    }
 	    // valodi tartalom atadasa
-	    tvTaskTitle.setText(taskList.get(position).getTitle().toString());
+	    taskView.tvTaskTitle.setText(taskList.get(position).getTitle().toString());
+	    try{
+	    	taskView.tvTaskEndDate.setText(taskList.get(position).getEndDate().toString());
+	    }catch(NullPointerException e){
+	    	taskView.tvTaskEndDate.setText("");
+	    }
+	    try{
+	    	taskView.tvTaskReqTime.setText(taskList.get(position).getRequiredTime().toString());
+	    }catch(NullPointerException e){
+	    	taskView.tvTaskReqTime.setText("");
+	    }
+	    
 	    GradientDrawable shape = (GradientDrawable)convertView.getBackground();
 	    if(taskList.get(position).getCategories().size()>0){
 	    	if(taskList.get(position).getCategories().size()>1){

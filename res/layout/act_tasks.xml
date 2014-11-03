@@ -28,9 +28,9 @@
 	    
         <ListView android:id="@+id/lv_tasks"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:scrollbars="none"
-            android:dividerHeight="12dp"/>
+            android:dividerHeight="11dp"/>
 	</RelativeLayout>
     
 	<LinearLayout android:id="@+id/llt_buttons"
@@ -46,29 +46,29 @@
 	    
 	    <Button android:id="@+id/btn_left"
 	        android:layout_width="0dp"
-	        android:layout_height="@dimen/button_size"
+	        android:layout_height="@dimen/list_item_height"
 	        android:text="1"
-	        android:textSize="24sp"
+	        android:textSize="@dimen/button_text_size"
 	        android:textColor="@android:color/white"
 	        android:background="@drawable/roundedbutton"
 	        android:layout_weight="1"/>
 	    
 	    <Button android:id="@+id/btn_center"
 	        android:layout_width="0dp"
-	        android:layout_height="@dimen/button_size"
+	        android:layout_height="@dimen/list_item_height"
 	        android:layout_marginLeft="8dp"
 	        android:layout_marginRight="8dp"
 	        android:text="@string/add_new_task"
 	        android:textColor="@android:color/white"
-	        android:textSize="24sp"
+	        android:textSize="@dimen/button_text_size"
 	        android:background="@drawable/roundedbutton"
 	        android:layout_weight="4"/>
 	    
 	    <Button android:id="@+id/btn_right"
 	        android:layout_width="0dp"
-	        android:layout_height="@dimen/button_size"
+	        android:layout_height="@dimen/list_item_height"
 	        android:text="3"
-	        android:textSize="24sp"
+	        android:textSize="@dimen/button_text_size"
 	        android:textColor="@android:color/white"
 	        android:background="@drawable/roundedbutton"
 	        android:layout_weight="1"/>

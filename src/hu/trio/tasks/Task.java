@@ -18,7 +18,7 @@ public class Task {
 	private boolean isDone;
 	private final Task parentTask;
 	private ArrayList<Task> subTasks;
-	private Date requiredTime; // 0 perc = 1970, Január, 0, 0, 0
+	private Date requiredTime; // 0 perc = 1970, Január 01. 1ó 0p 0mp
 	private Date childReqTime; 
 	
 	static{
@@ -49,8 +49,9 @@ public class Task {
 	}
 	
 	public Task(String title, Task parentTask){
-		this(counter++, title, new ArrayList<Category>(), null, null, false, 
-			 parentTask, new ArrayList<Task>(), null, null);
+		this(counter++, title, new ArrayList<Category>(), null, 
+			 null, false, parentTask, new ArrayList<Task>(), 
+			 null, null);
 	}
 	
 	public Task(String title){
@@ -110,7 +111,10 @@ public class Task {
 		this.description = description;
 	}
 	public Date getEndDate() {
-		return new Date(endDate.getTime());
+		if(endDate != null)
+			return new Date(endDate.getTime());
+		else
+			return null;
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
@@ -129,8 +133,13 @@ public class Task {
 		return new Task(parentTask);
 	}
 	public Date getRequiredTime() {
-		return new Date(requiredTime.getTime() > childReqTime.getTime() ? 
-						requiredTime.getTime() : childReqTime.getTime());
+		if(requiredTime != null && childReqTime != null){
+			return new Date(requiredTime.getTime() > childReqTime.getTime() ? 
+							requiredTime.getTime() : childReqTime.getTime());
+		}else if(requiredTime != null){
+			return new Date(requiredTime.getTime());
+		}else 
+			return null;
 	}
 	public void setRequiredTime(Date requiredTime) {
 		this.requiredTime = requiredTime;

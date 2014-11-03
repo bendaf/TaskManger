@@ -4,6 +4,7 @@ import hu.trio.tasks.Category;
 import hu.trio.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -54,8 +55,10 @@ public class TasksActivity extends Activity {
 		DB.categories.get(1).setColor("blue");
 		DB.categories.get(2).setColor("green");
 		DB.tasks.get(0).addToCategory(DB.categories.get(0));
+		DB.tasks.get(0).setEndDate(new Date());
 		DB.tasks.get(2).addToCategory(DB.categories.get(0));
 		DB.tasks.get(2).addToCategory(DB.categories.get(2));
+		DB.tasks.get(2).setRequiredTime(new Date(3600));
 		DB.tasks.get(3).addToCategory(DB.categories.get(0));
 		DB.tasks.get(4).addToCategory(DB.categories.get(1));
 		DB.tasks.get(5).addToCategory(DB.categories.get(1));
