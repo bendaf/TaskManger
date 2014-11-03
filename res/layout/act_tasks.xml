@@ -13,9 +13,10 @@
     	android:paddingTop="@dimen/vertical_margin"
         android:background="@color/gray_transparent">
         
-        <ListView android:id="@+id/lv_categories"
+        <com.devsmart.android.ui.HorizontalListView android:id="@+id/lv_categories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
             android:scrollbars="none"/>
     </RelativeLayout>
     

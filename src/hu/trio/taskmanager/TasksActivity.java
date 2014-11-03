@@ -5,12 +5,16 @@ import hu.trio.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
+
+import com.devsmart.android.ui.HorizontalListView;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ListView;
 
 //TROLLOLOOOOO
@@ -22,9 +26,12 @@ public class TasksActivity extends Activity {
 		static ArrayList<Task> tasks = new ArrayList<>();
 	}
 	
-	private Task currentTask;
+	private Task currentTask = null;
+	private Category currentCategory = null;
 	private TaskArrayAdapter taskAdapter;
+	private CategoryArrayAdapter categoryAdapter;
 	private ListView taskListView;
+	private HorizontalListView categoryListView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +42,11 @@ public class TasksActivity extends Activity {
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
         taskAdapter= new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
-        
+		
+        categoryListView = (HorizontalListView) findViewById(R.id.lv_categories);
+		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
+		categoryListView.setAdapter(categoryAdapter);
+		
 		DB.tasks.add(new Task("Bevásárlás"));
 		DB.tasks.add(new Task("Séta"));
 		DB.tasks.add(new Task("Futás"));
@@ -46,26 +57,27 @@ public class TasksActivity extends Activity {
 		DB.tasks.add(new Task("Szallagavató zene"));
 		DB.tasks.add(new Task("Kiskutya"));
 		DB.tasks.add(new Task("Kép nyomtat"));
+		DB.tasks.add(new Task("Szervízbe vinni a kocsit"));
+		DB.tasks.add(new Task("Fésülködés"));
+		DB.tasks.add(new Task("Fogmosás"));
+		DB.tasks.add(new Task("Gazsi felhív"));
 		
 		
-		DB.categories.add(new Category("Otthoni"));
-		DB.categories.add(new Category("Szülinap"));
+		DB.categories.add(new Category("Saját"));
+		DB.categories.add(new Category("Szülinapok"));
 		DB.categories.add(new Category("Állat"));
-		DB.categories.get(0).setColor("red");
-		DB.categories.get(1).setColor("blue");
-		DB.categories.get(2).setColor("green");
-		DB.tasks.get(0).addToCategory(DB.categories.get(0));
+		DB.categories.add(new Category("Család"));
+		DB.categories.add(new Category("Tanulás"));
+		DB.categories.add(new Category("Vasutasok"));
+		DB.categories.add(new Category("Munka"));
+
 		DB.tasks.get(0).setEndDate(new Date());
-		DB.tasks.get(2).addToCategory(DB.categories.get(0));
-		DB.tasks.get(2).addToCategory(DB.categories.get(2));
 		DB.tasks.get(2).setRequiredTime(new Date(3600));
-		DB.tasks.get(3).addToCategory(DB.categories.get(0));
-		DB.tasks.get(4).addToCategory(DB.categories.get(1));
-		DB.tasks.get(5).addToCategory(DB.categories.get(1));
-		DB.tasks.get(6).addToCategory(DB.categories.get(0));
-		DB.tasks.get(8).addToCategory(DB.categories.get(2));
-		DB.tasks.get(9).addToCategory(DB.categories.get(0));
-		Log.d("erdekel", DB.tasks.toString());
+		
+		Random r = new Random();
+		for(Task idTask : DB.tasks){
+			idTask.addToCategory(DB.categories.get(r.nextInt(DB.categories.size())));
+		}
 	}
 
 	@Override
