@@ -12,14 +12,20 @@ import com.devsmart.android.ui.HorizontalListView;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 //TROLLOLOOOOO
 
-public class TasksActivity extends Activity {
+public class TasksActivity extends Activity implements OnKeyListener{
 	
 	private static final class DB{
 		static ArrayList<Category> categories = new ArrayList<>();
@@ -32,15 +38,28 @@ public class TasksActivity extends Activity {
 	private CategoryArrayAdapter categoryAdapter;
 	private ListView taskListView;
 	private HorizontalListView categoryListView;
+	private EditText addNewTaskEt;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_tasks);
 		
-		currentTask = null;
+		addNewTaskEt = (EditText) findViewById(R.id.et_center);
+		addNewTaskEt.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(v.getId() == addNewTaskEt.getId() && addNewTaskEt.getText().
+											toString().equals(getResources().getString(R.string.add_new_task))){
+					addNewTaskEt.setText("");
+				}
+			}
+		});
+		addNewTaskEt.setOnKeyListener(this);
+		
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
-        taskAdapter= new TaskArrayAdapter(getApplicationContext(), DB.tasks);
+        taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
 		
         categoryListView = (HorizontalListView) findViewById(R.id.lv_categories);
@@ -142,5 +161,16 @@ public class TasksActivity extends Activity {
 			}
 		}
 		return reqCat;
+	}
+
+	@Override
+	public boolean onKey(View v, int keyCode, KeyEvent event) {
+		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+	          DB.tasks.add(0,new Task(addNewTaskEt.getText().toString()));
+	          addNewTaskEt.setText("");
+	          taskAdapter.notifyDataSetChanged();
+	          return true;
+		}
+		return false;
 	}
 }

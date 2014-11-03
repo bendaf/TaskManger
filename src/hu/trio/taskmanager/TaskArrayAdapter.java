@@ -29,11 +29,11 @@ public class TaskArrayAdapter extends BaseAdapter {
 	private SwipeTouchListener listener;
     private View swiped = null;
     private Integer swipedPos = -1;
-    Context context;
+    LayoutInflater inflater;
 
     public TaskArrayAdapter(Context context, ArrayList<Task> tasks) {
         this.taskList=tasks;
-        this.context=context;
+        inflater = LayoutInflater.from(context);
         this.listener=new SwipeTouchListener(context, R.id.rtl_taskItem, new SwipeListener() {
 			public void onFirstClick(View v) {}
 			
@@ -71,7 +71,7 @@ public class TaskArrayAdapter extends BaseAdapter {
         boolean isSwiped = position == swipedPos ? true : false;
 //	    if (convertView == null) {
 			// futasi idoben betoltunk egy layout-ot a LayoutInfalter-el:
-			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.task_item, parent, false);
 			/*
 			 * Ezzel a betoltessel hatarozzuk meg, hogy milyen szerkezete legyen a lista elemeknek
@@ -89,7 +89,8 @@ public class TaskArrayAdapter extends BaseAdapter {
 //	    } else {
 //	    	tvTaskTitle = (TextView) convertView.getTag();
 //	    }
-	    // valodi tartalom atadasa
+	        
+	    //Set taskitem's fields
 	    taskView.tvTaskTitle.setText(taskList.get(position).getTitle().toString());
 	    try{
 	    	taskView.tvTaskEndDate.setText(taskList.get(position).getEndDate().toString());
@@ -102,6 +103,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    	taskView.tvTaskReqTime.setText("");
 	    }
 	    
+	    //Set background shape of taskitem
 	    GradientDrawable shape = (GradientDrawable)convertView.getBackground();
 	    if(taskList.get(position).getCategories().size()>0){
 	    	if(taskList.get(position).getCategories().size()>1){
@@ -119,7 +121,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    }else{
 	    	shape.mutate();
 	    	shape.setColor(Color.GRAY);
-	    	Log.d("erdekel", taskList.get(position).getTitle().toString());
+//	    	Log.d("erdekel", taskList.get(position).getTitle().toString());
 	    }
 	    return convertView;
     }
