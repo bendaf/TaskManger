@@ -11,19 +11,17 @@ import com.devsmart.android.ui.HorizontalListView;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.widget.Button;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-
-//TROLLOLOOOOO
 
 public class TasksActivity extends Activity implements OnKeyListener{
 	
@@ -61,6 +59,16 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
         taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
+		taskListView.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
+		LinearLayout viewHeader = new LinearLayout(getApplicationContext());
+		viewHeader.setOrientation(LinearLayout.HORIZONTAL);
+		//convert dp to pixels
+		LayoutParams lp = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+						 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+						  100, 
+						  getResources().getDisplayMetrics()));
+		viewHeader.setLayoutParams(lp);
+		taskListView.addHeaderView(viewHeader);
 		
         categoryListView = (HorizontalListView) findViewById(R.id.lv_categories);
 		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);

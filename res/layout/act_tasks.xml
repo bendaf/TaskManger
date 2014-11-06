@@ -3,13 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="hu.trio.taskmanager.TasksActivity">
+    
+	<RelativeLayout android:id="@+id/rtl_tasks"
+        android:layout_alignParentTop="true"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:paddingLeft="@dimen/horizontal_margin"
+	    android:paddingRight="@dimen/horizontal_margin">
+	    
+        <ListView android:id="@+id/lv_tasks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:dividerHeight="11dp"/>
+	</RelativeLayout>
 
     <RelativeLayout android:id="@+id/rtl_categories" 
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-	    android:paddingLeft="@dimen/horizontal_margin"
-	    android:paddingRight="@dimen/horizontal_margin"
+        android:layout_height="@dimen/toplayer_height"
     	android:paddingTop="@dimen/vertical_margin"
         android:background="@color/gray_transparent">
         
@@ -19,20 +31,6 @@
             android:layout_marginTop="7dp"
             android:scrollbars="none"/>
     </RelativeLayout>
-    
-	<RelativeLayout android:id="@+id/rtl_tasks"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:paddingLeft="@dimen/horizontal_margin"
-	    android:paddingRight="@dimen/horizontal_margin"
-	    android:layout_below="@id/rtl_categories">
-	    
-        <ListView android:id="@+id/lv_tasks"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:dividerHeight="11dp"/>
-	</RelativeLayout>
     
 	<LinearLayout android:id="@+id/llt_buttons"
 	    android:layout_alignParentBottom="true"
@@ -48,7 +46,7 @@
 	    <Button android:id="@+id/btn_left"
 	        android:layout_width="0dp"
 	        android:layout_height="@dimen/list_item_height"
-	        android:text="1"
+	        android:text="G"
 	        android:textSize="@dimen/button_text_size"
 	        android:textColor="@android:color/white"
 	        android:background="@drawable/roundedbutton"
