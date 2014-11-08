@@ -174,7 +174,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-	          DB.tasks.add(0,new Task(addNewTaskEt.getText().toString()));
+	          addTask(null, new Task(addNewTaskEt.getText().toString()));
 	          addNewTaskEt.setText("");
 	          taskAdapter.notifyDataSetChanged();
 	          return true;
