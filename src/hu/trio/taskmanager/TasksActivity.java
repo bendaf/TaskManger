@@ -10,6 +10,7 @@ import java.util.Random;
 import com.devsmart.android.ui.HorizontalListView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -22,6 +23,7 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TasksActivity extends Activity implements OnKeyListener{
 	
@@ -37,6 +39,9 @@ public class TasksActivity extends Activity implements OnKeyListener{
 	private ListView taskListView;
 	private HorizontalListView categoryListView;
 	private EditText addNewTaskEt;
+	
+	private SQLiteHelper SQLHelp=new SQLiteHelper(this);
+	/* SQLHelp.open(); SQLHelp.close(); */
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,10 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
 		categoryListView.setAdapter(categoryAdapter);
 		
+//		SQLHelp.open();
+//		DB.tasks=SQLHelp.getTasks();
+//		SQLHelp.close();
+		
 		DB.tasks.add(new Task("Bevásárlás"));
 		DB.tasks.add(new Task("Séta"));
 		DB.tasks.add(new Task("Futás"));
@@ -88,8 +97,28 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		DB.tasks.add(new Task("Fésülködés"));
 		DB.tasks.add(new Task("Fogmosás"));
 		DB.tasks.add(new Task("Gazsi felhív"));
-		
-		
+		boolean works=true;
+		// itt a generált adatokat berakom.
+		try{
+			SQLHelp.open();
+			for(int i=0;i<DB.tasks.size();i++){
+				SQLHelp.addTask(DB.tasks.get(i));
+			}
+			DB.tasks=SQLHelp.getTasks();
+			SQLHelp.close();
+		}catch(Exception e){
+			works=false;
+		}finally{
+			if(works){
+				//ha sikerült megy tovább. amúgy lehet hibaüzenet.
+				Dialog d=new Dialog(this);
+				TextView tv=new TextView(this);
+				d.setTitle("Task adding");
+				tv.setText("Worked");
+				d.setContentView(tv);
+				d.show();
+			}
+		}
 		DB.categories.add(new Category("Saját"));
 		DB.categories.add(new Category("Szülinapok"));
 		DB.categories.add(new Category("Állat"));
@@ -97,7 +126,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		DB.categories.add(new Category("Tanulás"));
 		DB.categories.add(new Category("Vasutasok"));
 		DB.categories.add(new Category("Munka"));
-
+		
 		DB.tasks.get(0).setEndDate(new Date());
 		DB.tasks.get(2).setRequiredTime(new Date(3600));
 		
@@ -127,6 +156,10 @@ public class TasksActivity extends Activity implements OnKeyListener{
 	}
 	
 	public void addTask(Task parent, Task task){
+		SQLHelp.open();
+		SQLHelp.addTask(task);
+		SQLHelp.close();
+		
 		if(parent == null){
 			DB.tasks.add(task);
 		}else{
@@ -135,6 +168,10 @@ public class TasksActivity extends Activity implements OnKeyListener{
 	}
 	
 	public void removeTask(Task parent, Task task){
+		SQLHelp.open();
+		SQLHelp.deleteTask(task);
+		SQLHelp.close();
+		
 		if(parent == null){
 			DB.tasks.remove(task);
 		}else{
