@@ -40,7 +40,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 	private HorizontalListView categoryListView;
 	private EditText addNewTaskEt;
 	
-	private SQLiteHelper SQLHelp=new SQLiteHelper(this);
+	private SQLiteHelper SQLHelp;
 	/* SQLHelp.open(); SQLHelp.close(); */
 	
 	@Override
@@ -48,6 +48,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_tasks);
 		
+		SQLHelp = new SQLiteHelper(getApplicationContext());
 		addNewTaskEt = (EditText) findViewById(R.id.et_center);
 		addNewTaskEt.setOnClickListener(new OnClickListener() {
 			
