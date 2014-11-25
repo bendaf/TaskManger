@@ -66,15 +66,8 @@ public class TasksActivity extends Activity implements OnKeyListener{
         taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
 		taskListView.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
-		LinearLayout viewHeader = new LinearLayout(getApplicationContext());
-		viewHeader.setOrientation(LinearLayout.HORIZONTAL);
-		//convert dp to pixels
-		LayoutParams lp = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-						 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-						  100, 
-						  getResources().getDisplayMetrics()));
-		viewHeader.setLayoutParams(lp);
-		taskListView.addHeaderView(viewHeader);
+		taskListView.addHeaderView(transView(100));
+		taskListView.addFooterView(transView(60));
 		
         categoryListView = (HorizontalListView) findViewById(R.id.lv_categories);
 		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
@@ -99,6 +92,23 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		DB.tasks.add(new Task("Fogmosás"));
 		DB.tasks.add(new Task("Gazsi felhív"));
 		boolean works=true;
+		
+		DB.categories.add(new Category("Saját"));
+		DB.categories.add(new Category("Szülinapok"));
+		DB.categories.add(new Category("Állat"));
+		DB.categories.add(new Category("Család"));
+		DB.categories.add(new Category("Tanulás"));
+		DB.categories.add(new Category("Vasutasok"));
+		DB.categories.add(new Category("Munka"));
+		
+		DB.tasks.get(0).setEndDate(new Date());
+		DB.tasks.get(2).setRequiredTime(new Date(3600));
+		
+		Random r = new Random();
+		for(Task idTask : DB.tasks){
+			idTask.addToCategory(DB.categories.get(r.nextInt(DB.categories.size())));
+		}
+		
 		// itt a generált adatokat berakom.
 		try{
 			SQLHelp.open();
@@ -120,21 +130,18 @@ public class TasksActivity extends Activity implements OnKeyListener{
 				d.show();
 			}
 		}
-		DB.categories.add(new Category("Saját"));
-		DB.categories.add(new Category("Szülinapok"));
-		DB.categories.add(new Category("Állat"));
-		DB.categories.add(new Category("Család"));
-		DB.categories.add(new Category("Tanulás"));
-		DB.categories.add(new Category("Vasutasok"));
-		DB.categories.add(new Category("Munka"));
-		
-		DB.tasks.get(0).setEndDate(new Date());
-		DB.tasks.get(2).setRequiredTime(new Date(3600));
-		
-		Random r = new Random();
-		for(Task idTask : DB.tasks){
-			idTask.addToCategory(DB.categories.get(r.nextInt(DB.categories.size())));
-		}
+	}
+
+	private View transView(int height) {
+		LinearLayout view = new LinearLayout(getApplicationContext());
+		view.setOrientation(LinearLayout.HORIZONTAL);
+		//convert dp to pixels
+		LayoutParams lp = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+						 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+						  height, 
+						  getResources().getDisplayMetrics()));
+		view.setLayoutParams(lp);
+		return view;
 	}
 
 	@Override
