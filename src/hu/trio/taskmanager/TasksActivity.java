@@ -95,6 +95,12 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		});
 		addNewTaskEt.setOnKeyListener(this);
 		
+		SQLHelp.open();
+//		SQLHelp.reset();
+        DB.tasks=SQLHelp.getTasks();
+        DB.categories=SQLHelp.getCategorys();
+        SQLHelp.close();
+        
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
         taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
@@ -106,10 +112,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
 		categoryListView.setAdapter(categoryAdapter);
 		
-//		SQLHelp.open();
-//		DB.tasks=SQLHelp.getTasks();
-//		SQLHelp.close();
-		
+        
 		
         boolean junkData=false;
         if(junkData){
