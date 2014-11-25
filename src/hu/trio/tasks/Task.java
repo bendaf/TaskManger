@@ -105,7 +105,11 @@ public class Task {
 		this.title = title;
 	}
 	public String getDescription() {
-		return new String(description);
+		try{
+			return new String(description);
+		}catch (NullPointerException e) {
+			return null;
+		}
 	}
 	public void setDescription(String description) {
 		this.description = description;
@@ -130,7 +134,11 @@ public class Task {
 		isDone = lastIsDone;
 	}
 	public Task getParentTask() {
-		return new Task(parentTask);
+		try{
+			return new Task(parentTask);
+		}catch(NullPointerException e){
+			return null;
+		}
 	}
 	public Date getRequiredTime() {
 		if(requiredTime != null && childReqTime != null){
