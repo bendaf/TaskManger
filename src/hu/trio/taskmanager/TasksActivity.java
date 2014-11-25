@@ -43,6 +43,39 @@ public class TasksActivity extends Activity implements OnKeyListener{
 	private SQLiteHelper SQLHelp;
 	/* SQLHelp.open(); SQLHelp.close(); */
 	
+    private void loadJunkData(ArrayList<Task> tasks, ArrayList<Category> categories) {
+        tasks.add(new Task("Bevásárlás"));
+        tasks.add(new Task("Séta"));
+        tasks.add(new Task("Futás"));
+        tasks.add(new Task("Alma vásárlása a kisboldban"));
+        tasks.add(new Task("Krisz felköszönt"));
+        tasks.add(new Task("Ajándékot venni"));
+        tasks.add(new Task("Jogsi"));
+        tasks.add(new Task("Szallagavató zene"));
+        tasks.add(new Task("Kiskutya"));
+        tasks.add(new Task("Kép nyomtat"));
+        tasks.add(new Task("Szervízbe vinni a kocsit"));
+        tasks.add(new Task("Fésülködés"));
+        tasks.add(new Task("Fogmosás"));
+        tasks.add(new Task("Gazsi felhív"));
+        
+        categories.add(new Category("Saját"));
+        categories.add(new Category("Szülinapok"));
+        categories.add(new Category("Állat"));
+        categories.add(new Category("Család"));
+        categories.add(new Category("Tanulás"));
+        categories.add(new Category("Vasutasok"));
+        categories.add(new Category("Munka"));
+        
+		tasks.get(0).setEndDate(new Date());
+		tasks.get(2).setRequiredTime(new Date(3600));
+        
+        Random r = new Random();
+		for(Task idTask : tasks){
+			idTask.addToCategory(categories.get(r.nextInt(categories.size())));
+		}
+    }
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -77,50 +110,20 @@ public class TasksActivity extends Activity implements OnKeyListener{
 //		DB.tasks=SQLHelp.getTasks();
 //		SQLHelp.close();
 		
-		DB.tasks.add(new Task("Bevásárlás"));
-		DB.tasks.add(new Task("Séta"));
-		DB.tasks.add(new Task("Futás"));
-		DB.tasks.add(new Task("Alma vásárlása a kisboldban"));
-		DB.tasks.add(new Task("Krisz felköszönt"));
-		DB.tasks.add(new Task("Ajándékot venni"));
-		DB.tasks.add(new Task("Jogsi"));
-		DB.tasks.add(new Task("Szallagavató zene"));
-		DB.tasks.add(new Task("Kiskutya"));
-		DB.tasks.add(new Task("Kép nyomtat"));
-		DB.tasks.add(new Task("Szervízbe vinni a kocsit"));
-		DB.tasks.add(new Task("Fésülködés"));
-		DB.tasks.add(new Task("Fogmosás"));
-		DB.tasks.add(new Task("Gazsi felhív"));
-		boolean works=true;
 		
-		DB.categories.add(new Category("Saját"));
-		DB.categories.add(new Category("Szülinapok"));
-		DB.categories.add(new Category("Állat"));
-		DB.categories.add(new Category("Család"));
-		DB.categories.add(new Category("Tanulás"));
-		DB.categories.add(new Category("Vasutasok"));
-		DB.categories.add(new Category("Munka"));
-		
-		DB.tasks.get(0).setEndDate(new Date());
-		DB.tasks.get(2).setRequiredTime(new Date(3600));
-		
-		Random r = new Random();
-		for(Task idTask : DB.tasks){
-			idTask.addToCategory(DB.categories.get(r.nextInt(DB.categories.size())));
-		}
-		
-		// itt a generált adatokat berakom.
-		try{
-			SQLHelp.open();
-			for(int i=0;i<DB.tasks.size();i++){
-				SQLHelp.addTask(DB.tasks.get(i));
-			}
-			DB.tasks=SQLHelp.getTasks();
-			SQLHelp.close();
-		}catch(Exception e){
-			works=false;
-		}finally{
-			if(works){
+        boolean junkData=false;
+        if(junkData){
+            loadJunkData(DB.tasks,DB.categories);
+	
+			// itt a generált adatokat berakom.
+			try{
+				SQLHelp.open();
+				for(int i=0;i<DB.tasks.size();i++){
+					SQLHelp.addTask(DB.tasks.get(i));
+				}
+				DB.tasks=SQLHelp.getTasks();
+				SQLHelp.close();
+				
 				//ha sikerült megy tovább. amúgy lehet hibaüzenet.
 				Dialog d=new Dialog(this);
 				TextView tv=new TextView(this);
@@ -128,8 +131,10 @@ public class TasksActivity extends Activity implements OnKeyListener{
 				tv.setText("Worked");
 				d.setContentView(tv);
 				d.show();
+			}catch(Exception e){ ///TODO 
+				
 			}
-		}
+        }
 	}
 
 	private View transView(int height) {
