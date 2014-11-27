@@ -18,8 +18,11 @@ public class SQLiteHelper {
 	public static final String TASK_TITLE = "title";
 	public static final String TASK_DESCRIPTION = "description";
 	public static final String TASK_ENDDATE = "endDate";
+	public static final String TASK_LASTISDONE = "lastIsDone";
+	public static final String TASK_ISDONE = "isDone";
 	public static final String TASK_PARENT = "parent";
 	public static final String TASK_REQUIREDTIME = "requiredtime";
+	public static final String TASK_CHILDREQTIME = "childReqTime";
 //	public static final String CATEGORY_ID = "id";
 	public static final String CATEGORY_TITLE = "name";
 	public static final String CATEGORY_COLOR = "color";
@@ -53,8 +56,11 @@ public class SQLiteHelper {
 			TASK_TITLE +" TEXT NOT NULL, " +
 			TASK_DESCRIPTION +" TEXT, " +
 			TASK_ENDDATE + " LONG NOT NULL, " +
+			TASK_LASTISDONE + " BIT, " +
+			TASK_ISDONE + " BIT, " +
 			TASK_PARENT + " INTEGER, " +
-			TASK_REQUIREDTIME + " LONG NOT NULL);"
+			TASK_REQUIREDTIME + " LONG NOT NULL, " +
+			TASK_CHILDREQTIME + " LONG NOT NULL);"
 			);
 			db.execSQL("CREATE TABLE " + DATABASE_CATEGORY + " (" +
                     CATEGORY_COLOR + " INTEGER PRIMARY KEY, " +
@@ -101,10 +107,13 @@ public class SQLiteHelper {
         	else cv.put(TASK_DESCRIPTION,"");
         if(task.getEndDate()!=null)cv.put(TASK_ENDDATE,task.getEndDate().getTime());
         	else cv.put(TASK_ENDDATE, "0");
+        cv.put(TASK_LASTISDONE, task.isLastIsDone());
+        cv.put(TASK_ISDONE, task.isDone());
         if(task.getParentTask()!=null)cv.put(TASK_PARENT,task.getParentTask().getId());
         	else cv.put(TASK_PARENT,0);
         if(task.getRequiredTime()!=null)cv.put(TASK_REQUIREDTIME,task.getRequiredTime().getTime());
         	else cv.put(TASK_REQUIREDTIME,"0");
+        if(task.getChildReqTime()!=null)cv.put(TASK_CHILDREQTIME, task.getChildReqTime().getTime());
 
 		return ourDatabase.insert(DATABASE_TASKS, null, cv);
 	}
@@ -125,15 +134,18 @@ public class SQLiteHelper {
 		cvUpdate.put(TASK_TITLE, task.getTitle());
 		cvUpdate.put(TASK_DESCRIPTION,task.getDescription());
 		cvUpdate.put(TASK_ENDDATE,task.getEndDate().getTime());
+		cvUpdate.put(TASK_LASTISDONE,task.isLastIsDone());
+		cvUpdate.put(TASK_LASTISDONE,task.isDone());
 		cvUpdate.put(TASK_PARENT,task.getParentTask().getId());
 		cvUpdate.put(TASK_REQUIREDTIME,task.getRequiredTime().getTime());
+		cvUpdate.put(TASK_CHILDREQTIME,task.getChildReqTime().getTime());
 		ourDatabase.update(DATABASE_TASKS, cvUpdate, TASK_ID + "=" + task.getId(),null);
 	}
     public void modifyCategory(Category cat){// színt lehet-e utólag változtatni vagy csak a nevét.
-//      ContentValues cvUpdate = new ContentValues();
-//      cvUpdate.put(CATEGORY_TITLE, cat.getTitle());
-//      cvUpdate.put(CATEGORY_COLOR, cat.getColor());
-//      ourDatabase.update(DATABASE_CATEGORY, cvUpdate, CATEGORY_ID + "=" + cat.getId(),null);
+      ContentValues cvUpdate = new ContentValues();
+      cvUpdate.put(CATEGORY_TITLE, cat.getTitle());
+      cvUpdate.put(CATEGORY_COLOR, cat.getColor());
+      ourDatabase.update(DATABASE_CATEGORY, cvUpdate, CATEGORY_COLOR + "=" + cat.getColor(),null);
     }
 	public void deleteTask(Task task){
 		ourDatabase.delete(DATABASE_TASKS, TASK_ID + "=" + task.getId(), null);
@@ -160,8 +172,15 @@ public class SQLiteHelper {
         else return t;
         
 	}
-
-	public ArrayList<Task> getTasks() {
+    
+    private Category find(ArrayList<Category> categories, long color) {
+		for(int i=0;i<categories.size();i++){
+			if(categories.get(i).getColor()==color)return categories.get(i);
+		}
+		return null;
+	}
+    
+	public ArrayList<Task> getTasks(ArrayList<Category> categories) {
 		ArrayList<Task> tasks=new ArrayList<>();
 		String[] columns=new String[]{TASK_ID,TASK_TITLE,TASK_DESCRIPTION,
 				TASK_ENDDATE,TASK_PARENT,TASK_REQUIREDTIME};
@@ -170,24 +189,34 @@ public class SQLiteHelper {
 		int titleRow=c.getColumnIndex(TASK_TITLE);
 		int descriptionRow=c.getColumnIndex(TASK_DESCRIPTION);
 		int endDateRow=c.getColumnIndex(TASK_ENDDATE);
+		int isDone=c.getColumnIndex(TASK_ISDONE);
+		int lastIsDone=c.getColumnIndex(TASK_LASTISDONE);
 		int parentRow=c.getColumnIndex(TASK_PARENT);
 		int reqTimeRow=c.getColumnIndex(TASK_REQUIREDTIME);
+		int childTime=c.getColumnIndex(TASK_CHILDREQTIME);
 		for(c.moveToFirst();!c.isAfterLast();c.moveToNext()){
 			Task parent=null;//A szülõ megkeresése. felételezzük, hogy már szerepel az adatbázisban.
 			for(int i=0;i<tasks.size();i++){
                 parent=checkParent(tasks.get(i),c.getLong(parentRow));
-
+			}
+			ArrayList<Category> category=new ArrayList<Category>();
+			String[] columns2=new String[]{CATEGORY_TITLE,CATEGORY_COLOR};
+			Cursor c2=ourDatabase.query(DATABASE_CONNECTION,columns2,
+				CONNECTION_TASK_ID + " == " + c.getLong(idRow),null,null,null,null);
+			for(c2.moveToFirst();!c2.isAfterLast();c2.moveToNext()){
+				category.add(find(categories,c2.getLong(idRow)));
 			}
 			if(parent!=null)parent.addSubTask(new Task(c.getLong(idRow),
-					c.getString(titleRow),new ArrayList<Category>() ,c.getString(descriptionRow),
+					c.getString(titleRow),category,c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
-					false, parent, new ArrayList<Task>(), 
+					c.getInt(lastIsDone) ==0 ? false : true, parent, new ArrayList<Task>(), 
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)), null));
 			else tasks.add(new Task(c.getLong(idRow),
 					c.getString(titleRow),new ArrayList<Category>(),c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
 					false, parent, new ArrayList<Task>(), 
-					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)), null));
+					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)),
+					c.getLong(childTime) == 0 ? null : new Date(c.getLong(childTime))));
 		}
 		return tasks;
 	}
