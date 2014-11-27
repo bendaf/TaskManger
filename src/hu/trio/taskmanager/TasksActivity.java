@@ -97,8 +97,8 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		
 		SQLHelp.open();
 //		SQLHelp.reset();
-        DB.tasks=SQLHelp.getTasks();
-        DB.categories=SQLHelp.getCategorys();
+		DB.categories=SQLHelp.getCategorys();
+        DB.tasks=SQLHelp.getTasks(DB.categories);
         SQLHelp.close();
         
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
@@ -124,7 +124,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 				for(int i=0;i<DB.tasks.size();i++){
 					SQLHelp.addTask(DB.tasks.get(i));
 				}
-				DB.tasks=SQLHelp.getTasks();
+				DB.tasks=SQLHelp.getTasks(DB.categories);
 				SQLHelp.close();
 				
 				//ha sikerült megy tovább. amúgy lehet hibaüzenet.
