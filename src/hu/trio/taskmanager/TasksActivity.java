@@ -133,7 +133,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 				d.setTitle("Task adding");
 				tv.setText("Worked");
 				d.setContentView(tv);
-				d.show();
+//				d.show();
 			}catch(Exception e){ ///TODO 
 				
 			}

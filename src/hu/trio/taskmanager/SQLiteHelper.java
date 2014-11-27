@@ -114,7 +114,7 @@ public class SQLiteHelper {
         if(task.getRequiredTime()!=null)cv.put(TASK_REQUIREDTIME,task.getRequiredTime().getTime());
         	else cv.put(TASK_REQUIREDTIME,"0");
         if(task.getChildReqTime()!=null)cv.put(TASK_CHILDREQTIME, task.getChildReqTime().getTime());
-
+        	else cv.put(TASK_CHILDREQTIME,"0");
 		return ourDatabase.insert(DATABASE_TASKS, null, cv);
 	}
 	public long addCategory(Category cat){
@@ -183,7 +183,7 @@ public class SQLiteHelper {
 	public ArrayList<Task> getTasks(ArrayList<Category> categories) {
 		ArrayList<Task> tasks=new ArrayList<>();
 		String[] columns=new String[]{TASK_ID,TASK_TITLE,TASK_DESCRIPTION,
-				TASK_ENDDATE,TASK_PARENT,TASK_REQUIREDTIME};
+				TASK_ENDDATE,TASK_ISDONE,TASK_LASTISDONE,TASK_PARENT,TASK_REQUIREDTIME,TASK_CHILDREQTIME};
 		Cursor c = ourDatabase.query(DATABASE_TASKS,columns,null,null,null,null,null);
 		int idRow=c.getColumnIndex(TASK_ID);
 		int titleRow=c.getColumnIndex(TASK_TITLE);
@@ -200,7 +200,7 @@ public class SQLiteHelper {
                 parent=checkParent(tasks.get(i),c.getLong(parentRow));
 			}
 			ArrayList<Category> category=new ArrayList<Category>();
-			String[] columns2=new String[]{CATEGORY_TITLE,CATEGORY_COLOR};
+			String[] columns2=new String[]{CONNECTION_ID,CONNECTION_TASK_ID,CONNECTION_CATEGORY_COLOR};
 			Cursor c2=ourDatabase.query(DATABASE_CONNECTION,columns2,
 				CONNECTION_TASK_ID + " == " + c.getLong(idRow),null,null,null,null);
 			for(c2.moveToFirst();!c2.isAfterLast();c2.moveToNext()){
