@@ -42,6 +42,14 @@ public class Task {
 		this.childReqTime = childRequiredTime;
 	}
 	
+	public boolean isLastIsDone() {
+		return lastIsDone;
+	}
+	
+	public Date getChildReqTime() {
+		return childReqTime;
+	}
+
 	public Task(Task task){
 		this(task.getId(),task.getTitle(),task.getCategories(),task.getDescription(),
 		     task.getEndDate(),task.isDone,task.getParentTask(),task.getSubTasks(),
