@@ -4,10 +4,13 @@ import hu.trio.tasks.Category;
 import hu.trio.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.util.Log;
@@ -29,11 +32,13 @@ public class TaskArrayAdapter extends BaseAdapter {
 	private SwipeTouchListener listener;
     private View swiped = null;
     private Integer swipedPos = -1;
-    LayoutInflater inflater;
+    private LayoutInflater inflater;
+    private Resources res;
 
     public TaskArrayAdapter(Context context, ArrayList<Task> tasks) {
         this.taskList=tasks;
         inflater = LayoutInflater.from(context);
+        res = context.getResources();
         this.listener=new SwipeTouchListener(context, R.id.rtl_taskItem, new SwipeListener() {
 			public void onFirstClick(View v) {}
 			
@@ -93,12 +98,22 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    //Set taskitem's fields
 	    taskView.tvTaskTitle.setText(taskList.get(position).getTitle().toString());
 	    try{
-	    	taskView.tvTaskEndDate.setText(taskList.get(position).getEndDate().toString());
+	    	Date now = new Date();
+	    	if(now.getTime() < taskList.get(position).getEndDate().getTime()){
+	    		long diff = taskList.get(position).getEndDate().getTime() - now.getTime();
+	    		taskView.tvTaskEndDate.setText(
+	    				formatDate(new Date(diff),res.getString(R.string.remaining)));
+	    	}else{
+	    		taskView.tvTaskEndDate.setText(res.getString(R.string.expired));
+	    	}
+//	    	taskView.tvTaskEndDate.setText(taskList.get(position).getEndDate().toString());
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskEndDate.setText("");
 	    }
 	    try{
-	    	taskView.tvTaskReqTime.setText(taskList.get(position).getRequiredTime().toString());
+	    	taskView.tvTaskReqTime.setText(formatDate(taskList.get(position).getRequiredTime(),
+	    								   res.getString(R.string.task_req_time)));
+//	    	taskView.tvTaskReqTime.setText(taskList.get(position).getRequiredTime().toString());
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskReqTime.setText("");
 	    }
@@ -125,6 +140,33 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    }
 	    return convertView;
     }
+
+	private String formatDate(Date endDate, String comment) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(endDate);
+		String month = 
+				cal.get(Calendar.MONTH)>0 ? 
+						Integer.toString(cal.get(Calendar.MONTH) + 1) + " " + 
+						res.getString(R.string.month) + " " : "";
+//		Log.i("erdekel", "mo: " + Integer.toString(cal.get(Calendar.MONTH)));
+		String day =
+				cal.get(Calendar.DAY_OF_MONTH) > 1 ?
+						Integer.toString(cal.get(Calendar.DAY_OF_MONTH) - 1) + 
+						" " + res.getString(R.string.day) + " " : "";
+//		Log.i("erdekel", "d: " + Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
+		String hour = 
+				cal.get(Calendar.HOUR_OF_DAY) > 1 ? 
+						Integer.toString(cal.get(Calendar.HOUR_OF_DAY) - 1) + 
+						" " + res.getString(R.string.hour) + " " : "";
+//		Log.i("erdekel", "h: " + Integer.toString(cal.get(Calendar.HOUR_OF_DAY)));
+		String minute =
+				cal.get(Calendar.MINUTE) > 0 ? 
+						Integer.toString(cal.get(Calendar.MINUTE)) + " " + 
+						res.getString(R.string.minute) + " " : "";
+//		Log.i("erdekel", "mi: " +Integer.toString(cal.get(Calendar.MINUTE)));
+		String together = month + day + hour + minute; 
+		return together.isEmpty() ? "" : together + comment;
+	}
 
 	@Override
 	public long getItemId(int position) {
