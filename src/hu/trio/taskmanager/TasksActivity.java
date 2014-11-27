@@ -4,6 +4,7 @@ import hu.trio.tasks.Category;
 import hu.trio.tasks.Task;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
 
@@ -43,39 +44,6 @@ public class TasksActivity extends Activity implements OnKeyListener{
 	private SQLiteHelper SQLHelp;
 	/* SQLHelp.open(); SQLHelp.close(); */
 	
-    private void loadJunkData(ArrayList<Task> tasks, ArrayList<Category> categories) {
-        tasks.add(new Task("Bevásárlás"));
-        tasks.add(new Task("Séta"));
-        tasks.add(new Task("Futás"));
-        tasks.add(new Task("Alma vásárlása a kisboldban"));
-        tasks.add(new Task("Krisz felköszönt"));
-        tasks.add(new Task("Ajándékot venni"));
-        tasks.add(new Task("Jogsi"));
-        tasks.add(new Task("Szallagavató zene"));
-        tasks.add(new Task("Kiskutya"));
-        tasks.add(new Task("Kép nyomtat"));
-        tasks.add(new Task("Szervízbe vinni a kocsit"));
-        tasks.add(new Task("Fésülködés"));
-        tasks.add(new Task("Fogmosás"));
-        tasks.add(new Task("Gazsi felhív"));
-        
-        categories.add(new Category("Saját"));
-        categories.add(new Category("Szülinapok"));
-        categories.add(new Category("Állat"));
-        categories.add(new Category("Család"));
-        categories.add(new Category("Tanulás"));
-        categories.add(new Category("Vasutasok"));
-        categories.add(new Category("Munka"));
-        
-		tasks.get(0).setEndDate(new Date());
-		tasks.get(2).setRequiredTime(new Date(3600));
-        
-        Random r = new Random();
-		for(Task idTask : tasks){
-			idTask.addToCategory(categories.get(r.nextInt(categories.size())));
-		}
-    }
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -139,19 +107,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
 			}
         }
 	}
-
-	private View transView(int height) {
-		LinearLayout view = new LinearLayout(getApplicationContext());
-		view.setOrientation(LinearLayout.HORIZONTAL);
-		//convert dp to pixels
-		LayoutParams lp = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-						 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
-						  height, 
-						  getResources().getDisplayMetrics()));
-		view.setLayoutParams(lp);
-		return view;
-	}
-
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -169,6 +125,54 @@ public class TasksActivity extends Activity implements OnKeyListener{
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+		
+    private void loadJunkData(ArrayList<Task> tasks, ArrayList<Category> categories) {
+        tasks.add(new Task("Bevásárlás"));
+        tasks.add(new Task("Séta"));
+        tasks.add(new Task("Futás"));
+        tasks.add(new Task("Alma vásárlása a kisboldban"));
+        tasks.add(new Task("Krisz felköszönt"));
+        tasks.add(new Task("Ajándékot venni"));
+        tasks.add(new Task("Jogsi"));
+        tasks.add(new Task("Szallagavató zene"));
+        tasks.add(new Task("Kiskutya"));
+        tasks.add(new Task("Kép nyomtat"));
+        tasks.add(new Task("Szervízbe vinni a kocsit"));
+        tasks.add(new Task("Fésülködés"));
+        tasks.add(new Task("Fogmosás"));
+        tasks.add(new Task("Gazsi felhív"));
+        
+        categories.add(new Category("Saját"));
+        categories.add(new Category("Szülinapok"));
+        categories.add(new Category("Állat"));
+        categories.add(new Category("Család"));
+        categories.add(new Category("Tanulás"));
+        categories.add(new Category("Vasutasok"));
+        categories.add(new Category("Munka"));
+        
+        Calendar c = Calendar.getInstance();
+        c.setTime(new Date());
+        c.add(Calendar.MINUTE, 2);
+		tasks.get(0).setEndDate(c.getTime());
+		tasks.get(2).setRequiredTime(new Date(360000*2));
+        
+        Random r = new Random();
+		for(Task idTask : tasks){
+			idTask.addToCategory(categories.get(r.nextInt(categories.size())));
+		}
+    }
+
+	private View transView(int height) {
+		LinearLayout view = new LinearLayout(getApplicationContext());
+		view.setOrientation(LinearLayout.HORIZONTAL);
+		//convert dp to pixels
+		LayoutParams lp = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+						 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
+						  height, 
+						  getResources().getDisplayMetrics()));
+		view.setLayoutParams(lp);
+		return view;
 	}
 	
 	public void addTask(Task parent, Task task){
