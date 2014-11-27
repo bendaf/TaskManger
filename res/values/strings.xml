@@ -15,5 +15,6 @@
     <string name="task_req_time">long</string>
     <string name="expired">expired</string>
     <string name="now">now</string>
+    <string name="all">All</string>
 
 </resources>
