@@ -65,8 +65,9 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		
 		SQLHelp.open();
 //		SQLHelp.reset();
-		DB.categories=SQLHelp.getCategorys();
-        DB.tasks=SQLHelp.getTasks(DB.categories);
+		SQLHelp.Load(DB.tasks,DB.categories);
+		//DB.categories=SQLHelp.getCategorys();
+        //DB.tasks=SQLHelp.getTasks(DB.categories);
         SQLHelp.close();
         
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
@@ -92,7 +93,10 @@ public class TasksActivity extends Activity implements OnKeyListener{
 				for(int i=0;i<DB.tasks.size();i++){
 					SQLHelp.addTask(DB.tasks.get(i));
 				}
-				DB.tasks=SQLHelp.getTasks(DB.categories);
+				for(int i=0;i<DB.categories.size();i++){
+					SQLHelp.addCategory(DB.categories.get(i));
+				}
+				//DB.tasks=SQLHelp.getTasks(DB.categories);
 				SQLHelp.close();
 				
 				//ha sikerült megy tovább. amúgy lehet hibaüzenet.
@@ -160,6 +164,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
         Random r = new Random();
 		for(Task idTask : tasks){
 			idTask.addToCategory(categories.get(r.nextInt(categories.size())));
+			//
 		}
     }
 

@@ -115,6 +115,12 @@ public class SQLiteHelper {
         	else cv.put(TASK_REQUIREDTIME,"0");
         if(task.getChildReqTime()!=null)cv.put(TASK_CHILDREQTIME, task.getChildReqTime().getTime());
         	else cv.put(TASK_CHILDREQTIME,"0");
+        if(task.getCategories()!=null){
+        	ArrayList<Category> categorys=task.getCategories();
+        	for(int i=0;i<categorys.size();i++){
+        		addConnection(task,categorys.get(i));
+        	}
+        }
 		return ourDatabase.insert(DATABASE_TASKS, null, cv);
 	}
 	public long addCategory(Category cat){
@@ -179,7 +185,6 @@ public class SQLiteHelper {
 		}
 		return null;
 	}
-    
 	public ArrayList<Task> getTasks(ArrayList<Category> categories) {
 		ArrayList<Task> tasks=new ArrayList<>();
 		String[] columns=new String[]{TASK_ID,TASK_TITLE,TASK_DESCRIPTION,
@@ -212,7 +217,7 @@ public class SQLiteHelper {
 					c.getInt(lastIsDone) ==0 ? false : true, parent, new ArrayList<Task>(), 
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)), null));
 			else tasks.add(new Task(c.getLong(idRow),
-					c.getString(titleRow),new ArrayList<Category>(),c.getString(descriptionRow),
+					c.getString(titleRow),category,c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
 					false, parent, new ArrayList<Task>(), 
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)),
@@ -231,7 +236,10 @@ public class SQLiteHelper {
             u.setColor(c.getString(colorRow));
             categorys.add(u);
         }
-
 		return categorys;
+	}
+	public void Load(ArrayList<Task> tasks, ArrayList<Category> categories) {
+		categories=getCategorys();
+		tasks=getTasks(categories);
 	}
 }
