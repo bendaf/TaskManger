@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 
 public class SQLiteHelper {
 	/* A táblák oszlopainak neve. */
@@ -233,7 +234,10 @@ public class SQLiteHelper {
         int colorRow=c.getColumnIndex(CATEGORY_COLOR);
         for(c.moveToFirst();!c.isAfterLast();c.moveToNext()){
             Category u=new Category(c.getString(titleRow));
-            u.setColor(c.getString(colorRow));
+            u.setColor(Color.alpha((int)c.getLong(colorRow)),
+            		   Color.red((int)c.getLong(colorRow)),
+            		   Color.green((int)c.getLong(colorRow)),
+            		   Color.blue((int)c.getLong(colorRow)));
             categorys.add(u);
         }
 		return categorys;
