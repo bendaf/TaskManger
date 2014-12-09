@@ -12,6 +12,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
+import android.util.Log;
 
 public class SQLiteHelper {
 	/* A táblák oszlopainak neve. */
@@ -69,7 +70,7 @@ public class SQLiteHelper {
 
 			);
 			db.execSQL("CREATE TABLE " + DATABASE_CONNECTION + " (" +
-					CONNECTION_ID + " INTEGER PRIMARY KEY, " +
+					CONNECTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
 					CONNECTION_TASK_ID +" INTEGER NOT NULL, " +
 					CONNECTION_CATEGORY_COLOR +" INTEGER NOT NULL);"
 
@@ -119,7 +120,9 @@ public class SQLiteHelper {
         if(task.getCategories()!=null){
         	ArrayList<Category> categorys=task.getCategories();
         	for(int i=0;i<categorys.size();i++){
-        		addConnection(task,categorys.get(i));
+        		if(addConnection(task,categorys.get(i)) == -1){
+        			Log.d("erdekel", "Nem sikerült a kapcsolat létrehozása!");
+        		};
         	}
         }
 		return ourDatabase.insert(DATABASE_TASKS, null, cv);
@@ -130,10 +133,10 @@ public class SQLiteHelper {
 		cv.put(CATEGORY_COLOR,cat.getColor());
 		return ourDatabase.insert(DATABASE_CATEGORY, null, cv);
 	}
-    public long addConnection(Task task,Category cat){
+    public long addConnection(Task task, Category cat){
         ContentValues cv = new ContentValues();
-        cv.put(TASK_ID,task.getId());
-        cv.put(CATEGORY_COLOR,cat.getColor());
+        cv.put(CONNECTION_TASK_ID,task.getId());
+        cv.put(CONNECTION_CATEGORY_COLOR,cat.getColor());
         return ourDatabase.insert(DATABASE_CONNECTION, null, cv);
     }
 	public void modifyTask(Task task){
@@ -180,7 +183,7 @@ public class SQLiteHelper {
         
 	}
     
-    private Category find(ArrayList<Category> categories, long color) {
+    private Category find(ArrayList<Category> categories, int color) {
 		for(int i=0;i<categories.size();i++){
 			if(categories.get(i).getColor()==color)return categories.get(i);
 		}
@@ -207,10 +210,13 @@ public class SQLiteHelper {
 			}
 			ArrayList<Category> category=new ArrayList<Category>();
 			String[] columns2=new String[]{CONNECTION_ID,CONNECTION_TASK_ID,CONNECTION_CATEGORY_COLOR};
+			String[] sel = {Long.toString(c.getLong(idRow))};
 			Cursor c2=ourDatabase.query(DATABASE_CONNECTION,columns2,
-				CONNECTION_TASK_ID + " == " + c.getLong(idRow),null,null,null,null);
+				CONNECTION_TASK_ID + " = ? ",sel,null,null,null);
+//			if(c2.isNull(0))break;
 			for(c2.moveToFirst();!c2.isAfterLast();c2.moveToNext()){
-				category.add(find(categories,c2.getLong(idRow)));
+				Category idle=find(categories,(c2.getInt(c2.getColumnIndex(CONNECTION_CATEGORY_COLOR))));
+				if(idle!=null)category.add(idle);
 			}
 			if(parent!=null)parent.addSubTask(new Task(c.getLong(idRow),
 					c.getString(titleRow),category,c.getString(descriptionRow),
