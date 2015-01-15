@@ -83,6 +83,13 @@ public class CategoryArrayAdapter extends BaseAdapter {
 				iCircle.setColor(Color.GRAY);
 				oCircle.setColor(darkerColor(Color.GRAY));
 				
+			}else{
+				categoryView.tvTitle.setText("");
+				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
+				GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
+				iCircle.mutate();
+				iCircle.setColor(Color.GRAY);
+				oCircle.setColor(darkerColor(Color.GRAY));
 			}
 		}
         return convertView;

@@ -5,7 +5,7 @@
     android:paddingLeft="2dp"
     android:paddingRight="2dp">
 	
-    <RelativeLayout 
+    <RelativeLayout android:id="@+id/rtl_circles"
 	    android:layout_centerHorizontal="true"
 	    android:layout_width="@dimen/circle_size"
 	    android:layout_height="@dimen/circle_size"
@@ -29,7 +29,7 @@
 	<TextView android:id="@+id/tv_categoryTitle"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
-	    android:layout_alignParentBottom="true"
+	    android:layout_below="@id/rtl_circles"
 	    android:layout_centerHorizontal="true"
 	    android:paddingBottom="5dp"
 	    android:textColor="@android:color/white"/>

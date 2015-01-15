@@ -16,5 +16,6 @@
     <string name="expired">expired</string>
     <string name="now">now</string>
     <string name="all">All</string>
+    <string name="name">Name</string>
 
 </resources>

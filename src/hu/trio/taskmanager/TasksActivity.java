@@ -12,7 +12,9 @@ import com.devsmart.android.ui.HorizontalListView;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -20,13 +22,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.View.OnLongClickListener;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TasksActivity extends Activity implements OnKeyListener{
+public class TasksActivity extends Activity implements OnKeyListener, OnLongClickListener{
 	
 	private static final class DB{
 		static ArrayList<Category> categories = new ArrayList<>();
@@ -80,7 +83,7 @@ public class TasksActivity extends Activity implements OnKeyListener{
         categoryListView = (HorizontalListView) findViewById(R.id.lv_categories);
 		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
 		categoryListView.setAdapter(categoryAdapter);
-		
+		categoryListView.setOnLongClickListener(this);
         
 		
         boolean junkData=false;
@@ -243,4 +246,16 @@ public class TasksActivity extends Activity implements OnKeyListener{
 		}
 		return false;
 	}
+
+	@Override
+	public boolean onLongClick(View v) {
+//		Log.d("erdekel", Integer.toString(v.getId()) +" "+ Integer.toString(R.id.lv_categories));
+		if(v.getId() == R.id.lv_categories){
+			Intent startCategoryEdit = new Intent(this, CategoryEditActivity.class);
+			startActivity(startCategoryEdit);
+		}
+		return false;
+	}
 }
+
+
