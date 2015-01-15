@@ -67,7 +67,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
 		addNewTaskEt.setOnKeyListener(this);
 		
 		SQLHelp.open();
-		//SQLHelp.reset();
+//		SQLHelp.reset();
 		//SQLHelp.Load(DB.tasks,DB.categories);//Not working.
 		DB.categories=SQLHelp.getCategorys();
         DB.tasks=SQLHelp.getTasks(DB.categories);
@@ -86,7 +86,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
 		categoryListView.setOnLongClickListener(this);
         
 		
-        boolean junkData=true;
+        boolean junkData=false;
         if(junkData){
             loadJunkData(DB.tasks,DB.categories);
 	
