@@ -67,10 +67,10 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
 		addNewTaskEt.setOnKeyListener(this);
 		
 		SQLHelp.open();
-//		SQLHelp.reset();
-		SQLHelp.Load(DB.tasks,DB.categories);
-		//DB.categories=SQLHelp.getCategorys();
-        //DB.tasks=SQLHelp.getTasks(DB.categories);
+		//SQLHelp.reset();
+		//SQLHelp.Load(DB.tasks,DB.categories);//Not working.
+		DB.categories=SQLHelp.getCategorys();
+        DB.tasks=SQLHelp.getTasks(DB.categories);
         SQLHelp.close();
         
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
@@ -86,7 +86,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
 		categoryListView.setOnLongClickListener(this);
         
 		
-        boolean junkData=false;
+        boolean junkData=true;
         if(junkData){
             loadJunkData(DB.tasks,DB.categories);
 	
@@ -138,8 +138,9 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
 	protected void onResume() {
 		super.onResume();
 		SQLHelp.open();
-		SQLHelp.Load(DB.tasks,DB.categories);
-        SQLHelp.close();
+		DB.categories=SQLHelp.getCategorys();
+        DB.tasks=SQLHelp.getTasks(DB.categories);
+		SQLHelp.close();
 		taskAdapter.notifyDataSetChanged();
 		categoryAdapter.notifyDataSetChanged();
 	}
