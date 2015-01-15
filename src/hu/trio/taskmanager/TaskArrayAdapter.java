@@ -34,11 +34,13 @@ public class TaskArrayAdapter extends BaseAdapter {
     private Integer swipedPos = -1;
     private LayoutInflater inflater;
     private Resources res;
+    private SQLiteHelper SQLHelp;
 
     public TaskArrayAdapter(Context context, ArrayList<Task> tasks) {
         this.taskList=tasks;
         inflater = LayoutInflater.from(context);
         res = context.getResources();
+        SQLHelp = new SQLiteHelper(context);
         this.listener=new SwipeTouchListener(context, R.id.rtl_taskItem, new SwipeListener() {
 			public void onFirstClick(View v) {}
 			
@@ -58,6 +60,9 @@ public class TaskArrayAdapter extends BaseAdapter {
 
 			@Override
 			public void onSwipeLeft(View v) {
+				SQLHelp.open();
+				SQLHelp.deleteTask(taskList.get((Integer) v.getTag()));
+		        SQLHelp.close();
 				taskList.remove(taskList.get((Integer) v.getTag()));
 				notifyDataSetChanged();
 //				swiped = null;
