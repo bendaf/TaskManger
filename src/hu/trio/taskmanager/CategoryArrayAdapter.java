@@ -74,32 +74,19 @@ public class CategoryArrayAdapter extends BaseAdapter {
 			iCircle.setColor(categories.get(position).getColor());
 			oCircle.setColor(categories.get(position).getDarkerColor());
 		}catch(IndexOutOfBoundsException e){
+			Log.d("erdekel", "No such a category: " +Integer.toString(position));
 			if(position == -1){
 				categoryView.tvTitle.setText(all.getTitle().toString());
-
-				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
-				GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
-				iCircle.mutate();
-				iCircle.setColor(Color.GRAY);
-				oCircle.setColor(darkerColor(Color.GRAY));
-				
 			}else{
 				categoryView.tvTitle.setText("");
-				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
-				GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
-				iCircle.mutate();
-				iCircle.setColor(Color.GRAY);
-				oCircle.setColor(darkerColor(Color.GRAY));
 			}
+
+			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
+			GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
+			iCircle.mutate();
+			iCircle.setColor(Color.GRAY);
+			oCircle.setColor(Category.darkerColor(Color.GRAY));
 		}
         return convertView;
-	}
-
-	private int darkerColor(int color) {
-		float[] hsv = new float[3];
-		Color.colorToHSV(color, hsv);
-		hsv[2] *= 0.8f; // value component
-		color = Color.HSVToColor(hsv);
-		return color;
 	}
 }

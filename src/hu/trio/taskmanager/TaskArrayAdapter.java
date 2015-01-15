@@ -153,19 +153,11 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    	}	
 	    }else{
 	    	shape.mutate();
-	    	shape.setColor(isDone ? darkerColor(Color.GRAY) : Color.GRAY);
+	    	shape.setColor(isDone ? Category.darkerColor(Color.GRAY) : Color.GRAY);
 //	    	Log.d("erdekel", taskList.get(position).getTitle().toString());
 	    }
 	    return convertView;
     }
-
-	private int darkerColor(int color) {
-		float[] hsv = new float[3];
-		Color.colorToHSV(color, hsv);
-		hsv[2] *= 0.8f; // value component
-		color = Color.HSVToColor(hsv);
-		return color;
-	}
 
 	private String formatDate(Date endDate, String comment) {
 		Calendar cal = Calendar.getInstance();

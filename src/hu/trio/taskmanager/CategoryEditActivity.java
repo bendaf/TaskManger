@@ -55,6 +55,8 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 				changeBackgroundOfView(selectedView, categories.get((Integer)selectedView.getTag()).getDarkerColor());
 			}catch(NullPointerException e){
 				Log.d("erdekel", "There isn't a selected view. " + e.toString());
+			}catch (IndexOutOfBoundsException e) {
+				changeBackgroundOfView(selectedView, Category.darkerColor(Color.GRAY));
 			}
 			changeBackgroundOfView(v,Color.WHITE);
 			selectedView = v;
