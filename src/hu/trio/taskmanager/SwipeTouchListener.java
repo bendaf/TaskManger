@@ -2,6 +2,7 @@ package hu.trio.taskmanager;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -41,56 +42,80 @@ public class SwipeTouchListener implements OnTouchListener{
 		View front = v.findViewById(frontViewId);
 		switch (event.getAction()) {
         case MotionEvent.ACTION_DOWN:
-            mDownX = event.getX();
-            frontTranslation = front.getTranslationX();
-            if(frontTranslation > 50){
-            	isSwipeOf = false;
-            }else isSwipeOf = true;
+        	mDownX = event.getX();
+//        	Log.d("erdekel", Float.toString(mDownX));
+        	
+//            mDownX = event.getX();
+//            frontTranslation = front.getTranslationX();
+//            if(frontTranslation > 50){
+//            	isSwipeOf = false;
+//            }else isSwipeOf = true;
             break;
         case MotionEvent.ACTION_CANCEL:
             front.animate().translationX(0);
             break;
         case MotionEvent.ACTION_MOVE:
             {
-                float deltaX = event.getX() - mDownX;
-                float deltaXAbs = Math.abs(deltaX);
-                if (!mSwiping) {
-                    if (deltaXAbs > mSwipeSlop) {
-                        mSwiping = true;
-                    }
-                }
-                if (mSwiping) {
-                	if(isSwipeOf){
-	                    front.setTranslationX((event.getX() - mDownX));
-                	}else{
-                		front.setTranslationX((event.getX() - mDownX) + frontTranslation);
-                	}
-                	if(front.getTranslationX() < 0)front.setTranslationX(0);
-                }
+            	float deltaX = event.getX() - mDownX;
+            	try{
+//            	Log.d("erdekel", "Move to: " + Float.toString(event.getX()) + " Tag: " + Integer.toString((Integer)v.getTag()));
+            	}catch (Exception e) {
+            		Log.d("erdekel", "hiba");
+            	}
+            	float deltaXAbs = Math.abs(deltaX);
+            	if (!mSwiping) {
+            		if (deltaXAbs > mSwipeSlop) {
+            			mSwiping = true;
+            		}
+            	}
+            	if(mSwiping){
+            		front.setTranslationX(event.getX()-mDownX);
+            	}
+//                float deltaX = event.getX() - mDownX;
+//                float deltaXAbs = Math.abs(deltaX);
+//                if (!mSwiping) {
+//                    if (deltaXAbs > mSwipeSlop) {
+//                        mSwiping = true;
+//                    }
+//                }
+//                if (mSwiping) {
+//                	if(isSwipeOf){
+//	                    front.setTranslationX((event.getX() - mDownX));
+//                	}else{
+//                		front.setTranslationX((event.getX() - mDownX) + frontTranslation);
+//                	}
+////                	if(front.getTranslationX() < 0)front.setTranslationX(0);
+//                }
             }
             break;
         case MotionEvent.ACTION_UP:
             {
-                float deltaX = event.getX() - mDownX;
-                float deltaXAbs = Math.abs(deltaX);
-                float fractionCovered = deltaXAbs / v.getWidth();
-                float endX;
-                if(isSwipeOf) endX = deltaX < 0 ? 0 : v.getWidth();
-                else endX = deltaX <= 0 ? 0 : v.getWidth();
-                long duration = (int) ((1 - fractionCovered) * SWIPE_DURATION);
-                
-                front.animate().setDuration(duration).translationX(endX);
-                mSwiping = false;
-        		v.performClick();
-                if(swipeLis != null){
-                	if(isSwipeOf) {
-                		swipeLis.onSwipeOff(v);
-                		swipeLis.onFirstClick(v);
-                	} else {
-                		swipeLis.onSwipeIn(v);
-                		swipeLis.onSecondClick(v);
-                	}
-                }
+            	float deltaX = event.getX() - mDownX;
+            	if(deltaX > (screenWidth/5)){
+            		swipeLis.onSwipeRight(v);
+            	}
+            	front.animate().translationX(0);
+            	
+//                float deltaX = event.getX() - mDownX;
+//                float deltaXAbs = Math.abs(deltaX);
+//                float fractionCovered = deltaXAbs / v.getWidth();
+//                float endX;
+//                if(isSwipeOf) endX = deltaX < 0 ? 0 : v.getWidth();
+//                else endX = deltaX <= 0 ? 0 : v.getWidth();
+//                long duration = (int) ((1 - fractionCovered) * SWIPE_DURATION);
+//                
+//                front.animate().setDuration(duration).translationX(endX);
+//                mSwiping = false;
+//        		v.performClick();
+//                if(swipeLis != null){
+//                	if(isSwipeOf) {
+////                		swipeLis.onSwipeOff(v);
+//                		swipeLis.onFirstClick(v);
+//                	} else {
+////                		swipeLis.onSwipeIn(v);
+////                		swipeLis.onSecondClick(v);
+//                	}
+//                }
             }
             break;
         }
@@ -102,7 +127,7 @@ public class SwipeTouchListener implements OnTouchListener{
 		if(front == null) return;
 		if(front.getTranslationX() > 50){
 			front.animate().setDuration(SWIPE_DURATION).translationX(0);
-			if(swipeLis != null) swipeLis.onSwipeIn(v);
+//			if(swipeLis != null) swipeLis.onSwipeIn(v);
 		}
 	}
 	
@@ -111,7 +136,7 @@ public class SwipeTouchListener implements OnTouchListener{
 		if(front == null) return;
 		if(front.getTranslationX() < 50){
 			front.animate().setDuration(SWIPE_DURATION).translationX(v.getWidth() == 0 ? screenWidth : v.getWidth());
-			if(swipeLis != null) swipeLis.onSwipeOff(v);
+//			if(swipeLis != null) swipeLis.onSwipeOff(v);
 		}
 	}
 	
@@ -120,10 +145,10 @@ public class SwipeTouchListener implements OnTouchListener{
 		if(front == null) return;
 		if(toSwipeOff){
 			front.setTranslationX(v.getWidth() == 0 ? screenWidth : v.getWidth());
-			if(swipeLis != null) swipeLis.onSwipeOff(v);
+//			if(swipeLis != null) swipeLis.onSwipeOff(v);
 		}else{
 			front.setTranslationX(0);
-			if(swipeLis != null) swipeLis.onSwipeIn(v);
+//			if(swipeLis != null) swipeLis.onSwipeIn(v);
 		}
 	}
 }

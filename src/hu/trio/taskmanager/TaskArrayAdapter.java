@@ -42,20 +42,31 @@ public class TaskArrayAdapter extends BaseAdapter {
         this.listener=new SwipeTouchListener(context, R.id.rtl_taskItem, new SwipeListener() {
 			public void onFirstClick(View v) {}
 			
-			@Override
-			public void onSecondClick(View v) {}
+//			@Override
+//			public void onSecondClick(View v) {}
 
 			@Override
-			public void onSwipeOff(View v) {
-				if(swiped != null) listener.swipeIn(swiped);
-				swiped = v;
-				swipedPos = 1;
+			public void onSwipeRight(View v) {
+				int pos = (Integer)v.getTag();
+				taskList.get(pos).setDone(true);
+				notifyDataSetChanged();
+				
+//				if(swiped != null) listener.swipeIn(swiped);
+//				swiped = v;
+//				swipedPos = 1;
 			}
 
 			@Override
-			public void onSwipeIn(View v) {
-				swiped = null;
-				swipedPos = -1;
+			public void onSwipeLeft(View v) {
+				
+//				swiped = null;
+//				swipedPos = -1;
+			}
+
+			@Override
+			public void onLongClick(View v) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
     }
@@ -86,9 +97,10 @@ public class TaskArrayAdapter extends BaseAdapter {
 			taskView.tvTaskEndDate = (TextView) convertView.findViewById(R.id.tv_taskEndDate);
 			taskView.tvTaskReqTime = (TextView) convertView.findViewById(R.id.tv_taskReqTime);
 	        convertView.setOnTouchListener(listener);
+	        convertView.setTag(position);
 	        if(isSwiped){
 	        	listener.setSwipe(convertView,true);
-	        	swiped = convertView;
+//	        	swiped = convertView;
 	        }
 //			convertView.setTag(tvTaskTitle);
 //	    } else {
@@ -106,40 +118,48 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    	}else{
 	    		taskView.tvTaskEndDate.setText(res.getString(R.string.expired));
 	    	}
-//	    	taskView.tvTaskEndDate.setText(taskList.get(position).getEndDate().toString());
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskEndDate.setText("");
 	    }
 	    try{
 	    	taskView.tvTaskReqTime.setText(formatDate(taskList.get(position).getRequiredTime(),
 	    								   res.getString(R.string.task_req_time)));
-//	    	taskView.tvTaskReqTime.setText(taskList.get(position).getRequiredTime().toString());
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskReqTime.setText("");
 	    }
 	    
 	    //Set background shape of taskitem
 	    GradientDrawable shape = (GradientDrawable)convertView.getBackground();
+	    boolean isDone = taskList.get(position).isDone();
 	    if(taskList.get(position).getCategories().size()>0){
 	    	if(taskList.get(position).getCategories().size()>1){
 	    		List<Integer> colorArray = new ArrayList<>();
 		    	for(Category idCategory : taskList.get(position).getCategories()){
-		    		colorArray.add(idCategory.getColor());
+		    		colorArray.add(isDone ? idCategory.getDarkerColor() : idCategory.getColor());
 		    	}
 		    	shape.mutate();
 		    	shape.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 		    	shape.setColors(convertIntegers(colorArray));
 	    	}else{
 	    		shape.mutate();
-	    		shape.setColor(taskList.get(position).getCategories().get(0).getColor());
+	    		shape.setColor(isDone ? taskList.get(position).getCategories().get(0).getDarkerColor() :
+	    								taskList.get(position).getCategories().get(0).getColor());
 	    	}	
 	    }else{
 	    	shape.mutate();
-	    	shape.setColor(Color.GRAY);
+	    	shape.setColor(isDone ? darkerColor(Color.GRAY) : Color.GRAY);
 //	    	Log.d("erdekel", taskList.get(position).getTitle().toString());
 	    }
 	    return convertView;
     }
+
+	private int darkerColor(int color) {
+		float[] hsv = new float[3];
+		Color.colorToHSV(color, hsv);
+		hsv[2] *= 0.8f; // value component
+		color = Color.HSVToColor(hsv);
+		return color;
+	}
 
 	private String formatDate(Date endDate, String comment) {
 		Calendar cal = Calendar.getInstance();

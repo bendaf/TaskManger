@@ -72,7 +72,7 @@ public class CategoryArrayAdapter extends BaseAdapter {
 			GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
 			iCircle.mutate();
 			iCircle.setColor(categories.get(position).getColor());
-			oCircle.setColor(darkerColor(categories.get(position).getColor()));
+			oCircle.setColor(categories.get(position).getDarkerColor());
 		}catch(IndexOutOfBoundsException e){
 			if(position == -1){
 				categoryView.tvTitle.setText(all.getTitle().toString());

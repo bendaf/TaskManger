@@ -24,6 +24,12 @@ public class Category {
 	public int getColor() {
 		return Integer.valueOf(color);
 	}
+	public int getDarkerColor() {
+		float[] hsv = new float[3];
+		Color.colorToHSV(color, hsv);
+		hsv[2] *= 0.8f; // value component
+		return Color.HSVToColor(hsv);
+	}
 	public void setColor(int alpha, int red, int green, int blue) {
 		this.color = Color.argb(alpha, red, green, blue);
 	}
