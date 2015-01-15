@@ -58,7 +58,8 @@ public class TaskArrayAdapter extends BaseAdapter {
 
 			@Override
 			public void onSwipeLeft(View v) {
-				
+				taskList.remove(taskList.get((Integer) v.getTag()));
+				notifyDataSetChanged();
 //				swiped = null;
 //				swipedPos = -1;
 			}
@@ -98,10 +99,10 @@ public class TaskArrayAdapter extends BaseAdapter {
 			taskView.tvTaskReqTime = (TextView) convertView.findViewById(R.id.tv_taskReqTime);
 	        convertView.setOnTouchListener(listener);
 	        convertView.setTag(position);
-	        if(isSwiped){
-	        	listener.setSwipe(convertView,true);
+//	        if(isSwiped){
+//	        	listener.setSwipe(convertView,true);
 //	        	swiped = convertView;
-	        }
+//	        }
 //			convertView.setTag(tvTaskTitle);
 //	    } else {
 //	    	tvTaskTitle = (TextView) convertView.getTag();
