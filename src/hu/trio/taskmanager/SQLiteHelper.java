@@ -161,6 +161,7 @@ public class SQLiteHelper {
 		ourDatabase.delete(DATABASE_TASKS, TASK_ID + "=" + task.getId(), null);
 	}
 	public void deleteCategory(Category cat){
+		ourDatabase.delete(DATABASE_CONNECTION,CONNECTION_CATEGORY_COLOR + "=" + cat.getColor(), null);
         ourDatabase.delete(DATABASE_CATEGORY, CATEGORY_COLOR + "=" + cat.getColor(),null);
     }
     public void deleteConnection(Task task, Category cat){

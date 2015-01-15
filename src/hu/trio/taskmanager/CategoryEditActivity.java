@@ -85,6 +85,9 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
 	          if(etCategoryName.getText().toString().equals("")){
 	        	  try{
+	        		  SQLHelp.open();
+	        		  SQLHelp.deleteCategory(categories.get((Integer)selectedView.getTag()));
+	        		  SQLHelp.close();
 	        		  categories.remove(categories.get((Integer)selectedView.getTag()));
 	        	  }catch(IndexOutOfBoundsException e){
 	        		  e.printStackTrace();
@@ -93,10 +96,19 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 	        	  try{
 	        		  categories.get((Integer)selectedView.getTag())
 	        	  					.setTitle(etCategoryName.getText().toString());
+	        		  SQLHelp.open();
+	        		  SQLHelp.modifyCategory(categories.get((Integer)selectedView.getTag()));
+	        		  SQLHelp.close();
 	        	  }catch(IndexOutOfBoundsException e){
 	        		  categories.add(new Category(etCategoryName.getText().toString()));
+	        		  SQLHelp.open();
+	        		  SQLHelp.addCategory(categories.get(categories.size()-1));
+	        		  SQLHelp.close();
 	        	  }catch(NullPointerException e){
 	        		  categories.add(new Category(etCategoryName.getText().toString()));
+	        		  SQLHelp.open();
+	        		  SQLHelp.addCategory(categories.get(categories.size()-1));
+	        		  SQLHelp.close();
 	        	  }
 	          }
 	          catAdapter.notifyDataSetChanged();
