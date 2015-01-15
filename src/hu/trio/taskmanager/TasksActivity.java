@@ -115,25 +115,34 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
         }
 	}
 	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.tasks, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		// Inflate the menu; this adds items to the action bar if it is present.
+//		getMenuInflater().inflate(R.menu.tasks, menu);
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		// Handle action bar item clicks here. The action bar will
+//		// automatically handle clicks on the Home/Up button, so long
+//		// as you specify a parent activity in AndroidManifest.xml.
+//		int id = item.getItemId();
+//		if (id == R.id.action_settings) {
+//			return true;
+//		}
+//		return super.onOptionsItemSelected(item);
+//	}
 		
+	@Override
+	protected void onResume() {
+		super.onResume();
+		SQLHelp.open();
+		SQLHelp.Load(DB.tasks,DB.categories);
+        SQLHelp.close();
+		taskAdapter.notifyDataSetChanged();
+		categoryAdapter.notifyDataSetChanged();
+	}
     private void loadJunkData(ArrayList<Task> tasks, ArrayList<Category> categories) {
         tasks.add(new Task("Bevásárlás"));
         tasks.add(new Task("Séta"));
