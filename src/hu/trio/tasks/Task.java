@@ -73,9 +73,13 @@ public class Task {
 		categories.add(cat);
 	}
 	
-	//valami
 	public boolean isInTheCategory(Category cat){
-		return categories.contains(cat);
+		boolean isInCategories = false;
+		for(Category idCat : categories){
+			if(idCat.getColor() == cat.getColor())isInCategories = true;
+//			Log.d("erdekel", Integer.toString(idCat.getColor()) + " " + Integer.toString(cat.getColor()));
+		}
+		return isInCategories;
 	}
 	public ArrayList<Category> getCategories(){
 		return new ArrayList<Category>(categories);
