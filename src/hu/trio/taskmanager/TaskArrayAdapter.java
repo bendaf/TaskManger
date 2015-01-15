@@ -44,18 +44,11 @@ public class TaskArrayAdapter extends BaseAdapter {
         this.listener=new SwipeTouchListener(context, R.id.rtl_taskItem, new SwipeListener() {
 			public void onFirstClick(View v) {}
 			
-//			@Override
-//			public void onSecondClick(View v) {}
-
 			@Override
 			public void onSwipeRight(View v) {
 				int pos = (Integer)v.getTag();
-				taskList.get(pos).setDone(true);
+				taskList.get(pos).setDone(!taskList.get(pos).isDone());
 				notifyDataSetChanged();
-				
-//				if(swiped != null) listener.swipeIn(swiped);
-//				swiped = v;
-//				swipedPos = 1;
 			}
 
 			@Override
