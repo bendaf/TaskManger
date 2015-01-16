@@ -34,7 +34,6 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		
 		SQLHelp = new SQLiteHelper(getApplicationContext());
 		SQLHelp.open();
-//		SQLHelp.reset();
 		this.categories=SQLHelp.getCategorys();
         SQLHelp.close();
         etCategoryName = (EditText) findViewById(R.id.et_category_name);
@@ -78,7 +77,8 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		try{
 			etCategoryName.setText(categories.get(pos).getTitle());
 		}catch(IndexOutOfBoundsException e){
-			etCategoryName.setText(getResources().getText(R.string.name));
+			etCategoryName.setText("");
+			etCategoryName.setHint(getResources().getText(R.string.name));
 		}
 	}
 
