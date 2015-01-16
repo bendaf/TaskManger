@@ -96,20 +96,16 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 	        	  }
 	          }else{
 	        	  try{
-	        		  categories.get((Integer)selectedView.getTag())
-	        	  					.setTitle(etCategoryName.getText().toString());
+	        		  Category idCategory = categories.get((Integer)selectedView.getTag());
+	        	  	  idCategory.setTitle(etCategoryName.getText().toString());
 	        		  SQLHelp.open();
-	        		  SQLHelp.modifyCategory(categories.get((Integer)selectedView.getTag()));
+	        		  SQLHelp.modifyCategory(idCategory);
 	        		  SQLHelp.close();
-	        	  }catch(IndexOutOfBoundsException e){
-	        		  categories.add(new Category(etCategoryName.getText().toString()));
+	        	  }catch(IndexOutOfBoundsException|NullPointerException e){
+	        		  Category idCategory = new Category(etCategoryName.getText().toString());
+	        		  categories.add(idCategory);
 	        		  SQLHelp.open();
-	        		  SQLHelp.addCategory(categories.get(categories.size()-1));
-	        		  SQLHelp.close();
-	        	  }catch(NullPointerException e){
-	        		  categories.add(new Category(etCategoryName.getText().toString()));
-	        		  SQLHelp.open();
-	        		  SQLHelp.addCategory(categories.get(categories.size()-1));
+	        		  SQLHelp.addCategory(idCategory);
 	        		  SQLHelp.close();
 	        	  }
 	          }
