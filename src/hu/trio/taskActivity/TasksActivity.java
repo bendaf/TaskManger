@@ -21,6 +21,8 @@ import com.devsmart.android.ui.HorizontalListView;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -36,6 +38,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class TasksActivity extends Activity implements OnKeyListener, OnItemLongClickListener, OnItemClickListener{
@@ -52,6 +55,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 	private ListView taskListView;
 	private HorizontalListView categoryListView;
 	private EditText addNewTaskEt;
+	private RelativeLayout addNewTaskRtl;
 	
 	private SQLiteHelper SQLHelp;
 	/* SQLHelp.open(); SQLHelp.close(); */
@@ -62,6 +66,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		setContentView(R.layout.act_tasks);
 		
 		SQLHelp = new SQLiteHelper(getApplicationContext());
+		addNewTaskRtl = (RelativeLayout) findViewById(R.id.rtl_center);
 		addNewTaskEt = (EditText) findViewById(R.id.et_center);
 		addNewTaskEt.setOnClickListener(new OnClickListener() {
 			
@@ -76,7 +81,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		addNewTaskEt.setOnKeyListener(this);
 		
 		SQLHelp.open();
-//		SQLHelp.reset();
+		SQLHelp.reset();
 		//SQLHelp.Load(DB.tasks,DB.categories);//Not working.
 		DB.categories=SQLHelp.getCategorys();
         DB.tasks=SQLHelp.getTasks(DB.categories);
@@ -96,7 +101,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		categoryListView.setOnItemClickListener(this);
         
 		
-        boolean junkData=false;
+        boolean junkData=true;
         if(junkData){
             loadJunkData(DB.tasks,DB.categories);
 	
@@ -240,10 +245,12 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-	          addTask(null, new Task(addNewTaskEt.getText().toString()));
-	          addNewTaskEt.setText("");
-	          taskAdapter.notifyDataSetChanged();
-	          return true;
+			Task idTask = new Task(addNewTaskEt.getText().toString());
+			if(currentCategory!=null)idTask.addToCategory(currentCategory);
+	        addTask(null, idTask);
+	        addNewTaskEt.setText("");
+	        taskAdapter.notifyDataSetChanged();
+	        return true;
 		}
 		return false;
 	}
@@ -257,9 +264,12 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 			while(itask.hasNext()){
 				Task idtask = itask.next();
 				if(!idtask.isInTheCategory(currentCategory))itask.remove();
-//				Log.d("erdekel", "remove");
 			}
-//			DB.tasks.clear();
+			GradientDrawable shape = (GradientDrawable)addNewTaskRtl.getBackground();
+			shape.mutate();
+    		shape.setColor(currentCategory.getColor());
+		}else{
+			addNewTaskRtl.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
 		}
 		DB.tasks.clear();
 		DB.tasks.addAll(idTasks);
