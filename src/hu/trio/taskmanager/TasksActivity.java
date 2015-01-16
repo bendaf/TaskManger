@@ -6,6 +6,7 @@ import hu.trio.tasks.Task;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.Random;
 
 import com.devsmart.android.ui.HorizontalListView;
@@ -17,19 +18,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
 import android.view.View.OnLongClickListener;
 import android.widget.AbsListView.LayoutParams;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TasksActivity extends Activity implements OnKeyListener, OnLongClickListener{
+public class TasksActivity extends Activity implements OnKeyListener, OnItemLongClickListener, OnItemClickListener{
 	
 	private static final class DB{
 		static ArrayList<Category> categories = new ArrayList<>();
@@ -83,7 +85,8 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
         categoryListView = (HorizontalListView) findViewById(R.id.lv_categories);
 		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
 		categoryListView.setAdapter(categoryAdapter);
-		categoryListView.setOnLongClickListener(this);
+		categoryListView.setOnItemLongClickListener(this);
+		categoryListView.setOnItemClickListener(this);
         
 		
         boolean junkData=false;
@@ -115,35 +118,19 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
         }
 	}
 	
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		// Inflate the menu; this adds items to the action bar if it is present.
-//		getMenuInflater().inflate(R.menu.tasks, menu);
-//		return true;
-//	}
-//
-//	@Override
-//	public boolean onOptionsItemSelected(MenuItem item) {
-//		// Handle action bar item clicks here. The action bar will
-//		// automatically handle clicks on the Home/Up button, so long
-//		// as you specify a parent activity in AndroidManifest.xml.
-//		int id = item.getItemId();
-//		if (id == R.id.action_settings) {
-//			return true;
-//		}
-//		return super.onOptionsItemSelected(item);
-//	}
-		
 	@Override
 	protected void onResume() {
 		super.onResume();
 		SQLHelp.open();
-		DB.categories=SQLHelp.getCategorys();
-        DB.tasks=SQLHelp.getTasks(DB.categories);
+		DB.categories.clear();
+		DB.categories.addAll(SQLHelp.getCategorys());
+//        DB.tasks=SQLHelp.getTasks(DB.categories);
 		SQLHelp.close();
-		taskAdapter.notifyDataSetChanged();
+//		taskAdapter.notifyDataSetChanged();
 		categoryAdapter.notifyDataSetChanged();
+//		Log.d("erdekel", "Notify");
 	}
+	
     private void loadJunkData(ArrayList<Task> tasks, ArrayList<Category> categories) {
         tasks.add(new Task("Bevásárlás"));
         tasks.add(new Task("Séta"));
@@ -160,19 +147,16 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
         tasks.add(new Task("Fogmosás"));
         tasks.add(new Task("Gazsi felhív"));
         
-        categories.add(new Category("Saját"));
         categories.add(new Category("Szülinapok"));
-        categories.add(new Category("Állat"));
         categories.add(new Category("Család"));
         categories.add(new Category("Tanulás"));
-        categories.add(new Category("Vasutasok"));
         categories.add(new Category("Munka"));
         
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
         c.add(Calendar.MINUTE, 2);
-		tasks.get(0).setEndDate(c.getTime());
-		tasks.get(2).setRequiredTime(new Date(360000*2));
+//		tasks.get(0).setEndDate(c.getTime());
+//		tasks.get(2).setRequiredTime(new Date(360000*2));
         
         Random r = new Random();
 		for(Task idTask : tasks){
@@ -257,14 +241,42 @@ public class TasksActivity extends Activity implements OnKeyListener, OnLongClic
 		return false;
 	}
 
+	private void refreshView() {
+		SQLHelp.open();
+		ArrayList<Task> idTasks = SQLHelp.getTasks(DB.categories);
+		SQLHelp.close();
+		if(currentCategory != null){
+			Iterator<Task> itask = idTasks.iterator();
+			while(itask.hasNext()){
+				Task idtask = itask.next();
+				if(!idtask.isInTheCategory(currentCategory))itask.remove();
+//				Log.d("erdekel", "remove");
+			}
+//			DB.tasks.clear();
+		}
+		DB.tasks.clear();
+		DB.tasks.addAll(idTasks);
+		taskAdapter.notifyDataSetChanged();
+	}
+
 	@Override
-	public boolean onLongClick(View v) {
+	public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
 //		Log.d("erdekel", Integer.toString(v.getId()) +" "+ Integer.toString(R.id.lv_categories));
-		if(v.getId() == R.id.lv_categories){
+//		if(v.getId() == R.id.lv_categories){
 			Intent startCategoryEdit = new Intent(this, CategoryEditActivity.class);
 			startActivity(startCategoryEdit);
+//		}
+		return true;
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		if(position < 1){
+			currentCategory = null;
+		}else{
+			currentCategory = DB.categories.get(position-1);
 		}
-		return false;
+		refreshView();
 	}
 }
 
