@@ -1,4 +1,4 @@
-package hu.trio.taskmanager;
+package hu.trio.database;
 
 import java.sql.Date;
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package hu.trio.taskmanager;
+package hu.trio.taskActivity;
 
 import android.view.View;
 

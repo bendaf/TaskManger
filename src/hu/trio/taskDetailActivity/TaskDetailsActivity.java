@@ -1,5 +1,7 @@
-package hu.trio.taskmanager;
+package hu.trio.taskDetailActivity;
 
+import hu.trio.taskmanager.R;
+import hu.trio.taskmanager.R.layout;
 import android.app.Activity;
 import android.os.Bundle;
 

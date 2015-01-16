@@ -1,4 +1,4 @@
-package hu.trio.taskmanager;
+package hu.trio.taskActivity;
 
 import static com.nineoldandroids.view.ViewHelper.setAlpha;
 import static com.nineoldandroids.view.ViewHelper.setTranslationX;

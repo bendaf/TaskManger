@@ -1,5 +1,9 @@
-package hu.trio.taskmanager;
+package hu.trio.categoryEditView;
 
+import hu.trio.taskmanager.R;
+import hu.trio.taskmanager.R.id;
+import hu.trio.taskmanager.R.layout;
+import hu.trio.taskmanager.R.string;
 import hu.trio.tasks.Category;
 
 import java.util.ArrayList;
