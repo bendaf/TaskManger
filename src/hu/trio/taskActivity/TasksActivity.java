@@ -50,7 +50,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 	
 	private Task currentTask = null;
 	private Category currentCategory = null;
-	private TaskArrayAdapter taskAdapter;
+	private TaskArrayAdapter2 taskAdapter;
 	private CategoryArrayAdapter categoryAdapter;
 	private ListView taskListView;
 	private HorizontalListView categoryListView;
@@ -88,11 +88,40 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
         SQLHelp.close();
         
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
-        taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
+//        taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
+		taskAdapter = new TaskArrayAdapter2(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
 		taskListView.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
 		taskListView.addHeaderView(transView(100));
 		taskListView.addFooterView(transView(60));
+		SwipeDismissListViewTouchListener touchListener = 
+				new SwipeDismissListViewTouchListener(taskListView,
+						new SwipeDismissListViewTouchListener.OnDismissCallback() {
+							@Override
+							public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+								SQLHelp.open();
+								for(int position : reverseSortedPositions){
+									SQLHelp.deleteTask(taskAdapter.getItem(position));
+									DB.tasks.remove(position);
+									//taskAdapter.remove(taskAdapter.getItem(position));
+								}
+						        SQLHelp.close();
+								taskAdapter.notifyDataSetChanged();
+							}
+
+							@Override
+							public void onChangeDone(ListView listView, int pos) {
+								SQLHelp.open();
+								//taskAdapter.getItem(pos).setDone(!taskAdapter.getItem(pos).isDone());
+								DB.tasks.get(pos).setDone(!DB.tasks.get(pos).isDone());
+								SQLHelp.modifyTask(DB.tasks.get(pos));
+						        SQLHelp.close();
+								taskAdapter.notifyDataSetChanged();
+							}
+						}, R.id.rtl_taskItem);
+		taskListView.setOnTouchListener(touchListener);
+		taskListView.setOnScrollListener(touchListener.makeScrollListener());
+		
 		
         categoryListView = (HorizontalListView) findViewById(R.id.lv_categories);
 		categoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
