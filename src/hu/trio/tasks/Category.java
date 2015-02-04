@@ -34,10 +34,14 @@ public class Category {
 		this.color = Color.parseColor(colorString);
 	}
 	public static int darkerColor(int color){
+		return darkerColor(color,0.8f);
+	}
+	public static int darkerColor(int color, float ratio){
 		float[] hsv = new float[3];
 		Color.colorToHSV(color, hsv);
-		hsv[2] *= 0.8f; // value component
+		hsv[2] *= ratio; // value component
 		return Color.HSVToColor(hsv);
+		
 	}
 	
 }
