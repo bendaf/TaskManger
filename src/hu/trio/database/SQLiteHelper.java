@@ -142,13 +142,18 @@ public class SQLiteHelper {
 	public void modifyTask(Task task){
 		ContentValues cvUpdate = new ContentValues();
 		cvUpdate.put(TASK_TITLE, task.getTitle());
-		cvUpdate.put(TASK_DESCRIPTION,task.getDescription());
-		cvUpdate.put(TASK_ENDDATE,task.getEndDate().getTime());
+		if(task.getDescription()!=null)cvUpdate.put(TASK_DESCRIPTION,task.getDescription());
+    	else cvUpdate.put(TASK_DESCRIPTION,"");
+		if(task.getEndDate()!=null)cvUpdate.put(TASK_ENDDATE,task.getEndDate().getTime());
+    	else cvUpdate.put(TASK_ENDDATE, "0");
 		cvUpdate.put(TASK_LASTISDONE,task.isLastIsDone());
-		cvUpdate.put(TASK_LASTISDONE,task.isDone());
-		cvUpdate.put(TASK_PARENT,task.getParentTask().getId());
-		cvUpdate.put(TASK_REQUIREDTIME,task.getRequiredTime().getTime());
-		cvUpdate.put(TASK_CHILDREQTIME,task.getChildReqTime().getTime());
+		cvUpdate.put(TASK_ISDONE,task.isDone());
+		if(task.getParentTask()!=null)cvUpdate.put(TASK_PARENT,task.getParentTask().getId());
+    	else cvUpdate.put(TASK_PARENT,0);
+		if(task.getRequiredTime()!=null)cvUpdate.put(TASK_REQUIREDTIME,task.getRequiredTime().getTime());
+    	else cvUpdate.put(TASK_REQUIREDTIME,"0");
+		if(task.getChildReqTime()!=null)cvUpdate.put(TASK_CHILDREQTIME, task.getChildReqTime().getTime());
+    	else cvUpdate.put(TASK_CHILDREQTIME,"0");
 		ourDatabase.update(DATABASE_TASKS, cvUpdate, TASK_ID + "=" + task.getId(),null);
 	}
     public void modifyCategory(Category cat){// színt lehet-e utólag változtatni vagy csak a nevét.
@@ -222,12 +227,12 @@ public class SQLiteHelper {
 			if(parent!=null)parent.addSubTask(new Task(c.getLong(idRow),
 					c.getString(titleRow),category,c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
-					c.getInt(lastIsDone) ==0 ? false : true, parent, new ArrayList<Task>(), 
+					c.getInt(isDone) ==0 ? false : true, parent, new ArrayList<Task>(), 
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)), null));
 			else tasks.add(new Task(c.getLong(idRow),
 					c.getString(titleRow),category,c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
-					false, parent, new ArrayList<Task>(), 
+					c.getInt(isDone) ==0 ? false : true, parent, new ArrayList<Task>(), 
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)),
 					c.getLong(childTime) == 0 ? null : new Date(c.getLong(childTime))));
 		}
@@ -248,9 +253,5 @@ public class SQLiteHelper {
             categorys.add(u);
         }
 		return categorys;
-	}
-	public void Load(ArrayList<Task> tasks, ArrayList<Category> categories) {
-		categories=getCategorys();
-		tasks=getTasks(categories);
 	}
 }
