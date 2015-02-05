@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="none"
-            android:dividerHeight="11dp"/>
+            android:dividerHeight="11dp"
+            android:divider="@android:color/transparent"/>
 	</RelativeLayout>
 
     <RelativeLayout android:id="@+id/rtl_categories" 
