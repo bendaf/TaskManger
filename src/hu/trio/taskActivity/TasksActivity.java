@@ -41,7 +41,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class TasksActivity extends Activity implements OnKeyListener, OnItemLongClickListener, OnItemClickListener{
+
+public class TasksActivity extends Activity implements OnKeyListener, OnItemLongClickListener, OnItemClickListener, OnClickListener{
 	
 	private static final class DB{
 		static ArrayList<Category> categories = new ArrayList<>();
@@ -57,8 +58,10 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 	private EditText addNewTaskEt;
 	private RelativeLayout addNewTaskRtl;
 	
+	private Button searchBtn;
 	private SQLiteHelper SQLHelp;
 	/* SQLHelp.open(); SQLHelp.close(); */
+	private Boolean isSearching = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +83,8 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		});
 		addNewTaskEt.setOnKeyListener(this);
 		
+		searchBtn = (Button) findViewById(R.id.btn_right);
+		searchBtn.setOnClickListener(this);
 		SQLHelp.open();
 		SQLHelp.reset();
 		//SQLHelp.Load(DB.tasks,DB.categories);//Not working.
@@ -273,13 +278,17 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
-		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-			Task idTask = new Task(addNewTaskEt.getText().toString());
-			if(currentCategory!=null)idTask.addToCategory(currentCategory);
-	        addTask(null, idTask);
-	        addNewTaskEt.setText("");
-	        taskAdapter.notifyDataSetChanged();
-	        return true;
+		if(!isSearching){
+			if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+				Task idTask = new Task(addNewTaskEt.getText().toString());
+				if(currentCategory!=null)idTask.addToCategory(currentCategory);
+		        addTask(null, idTask);
+		        addNewTaskEt.setText("");
+		        taskAdapter.notifyDataSetChanged();
+		        return true;
+			}
+		}else{
+			onClick(searchBtn);
 		}
 		return false;
 	}
@@ -324,6 +333,68 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		}
 		refreshView();
 	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.btn_right:
+			if(!isSearching){
+				isSearching = true;
+				addNewTaskEt.setHint(R.string.search);
+				addNewTaskEt.requestFocus();
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.showSoftInput(addNewTaskEt, InputMethodManager.SHOW_IMPLICIT);
+			}else{
+				String searchString = addNewTaskEt.getText().toString();
+				Iterator<Task> itask = DB.tasks.iterator();
+				while(itask.hasNext()){
+					Task idTask = itask.next();
+					if(!containsIgnoreCase(idTask.getTitle(),searchString)) itask.remove();
+				}
+				taskAdapter.notifyDataSetChanged();
+			}
+			break;
+
+		default:
+			break;
+		}
+		
+	}
+	
+	@Override
+	public void onBackPressed(){
+
+		if(isSearching){
+			isSearching = false;
+			addNewTaskEt.setText("");
+			addNewTaskEt.setHint(R.string.add_new_task);
+			refreshView();
+		}else{
+			super.onBackPressed();
+		}
+	}
+	
+	public static boolean containsIgnoreCase(String src, String what) {
+	    final int length = what.length();
+	    if (length == 0)
+	        return true; // Empty string is contained
+
+	    final char firstLo = Character.toLowerCase(what.charAt(0));
+	    final char firstUp = Character.toUpperCase(what.charAt(0));
+
+	    for (int i = src.length() - length; i >= 0; i--) {
+	        // Quick check before calling the more expensive regionMatches() method:
+	        final char ch = src.charAt(i);
+	        if (ch != firstLo && ch != firstUp)
+	            continue;
+
+	        if (src.regionMatches(true, i, what, 0, length))
+	            return true;
+	    }
+
+	    return false;
+	}
 }
+
 
 
