@@ -4,9 +4,6 @@ import hu.trio.categoryEditView.CategoryArrayAdapter;
 import hu.trio.categoryEditView.CategoryEditActivity;
 import hu.trio.database.SQLiteHelper;
 import hu.trio.taskmanager.R;
-import hu.trio.taskmanager.R.id;
-import hu.trio.taskmanager.R.layout;
-import hu.trio.taskmanager.R.string;
 import hu.trio.tasks.Category;
 import hu.trio.tasks.Task;
 
@@ -16,12 +13,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
 
-import com.devsmart.android.ui.HorizontalListView;
-
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,17 +25,19 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.view.View.OnLongClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.devsmart.android.ui.HorizontalListView;
 
 public class TasksActivity extends Activity implements OnKeyListener, OnItemLongClickListener, OnItemClickListener, OnClickListener{
 	
@@ -49,7 +46,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		static ArrayList<Task> tasks = new ArrayList<>();
 	}
 	
-	private Task currentTask = null;
+	//private Task currentTask = null;
 	private Category currentCategory = null;
 	private TaskArrayAdapter taskAdapter;
 	private CategoryArrayAdapter categoryAdapter;
@@ -57,10 +54,8 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 	private HorizontalListView categoryListView;
 	private EditText addNewTaskEt;
 	private RelativeLayout addNewTaskRtl;
-	
 	private Button searchBtn;
 	private SQLiteHelper SQLHelp;
-	/* SQLHelp.open(); SQLHelp.close(); */
 	private Boolean isSearching = false;
 	
 	@Override
@@ -87,13 +82,11 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		searchBtn.setOnClickListener(this);
 		SQLHelp.open();
 		SQLHelp.reset();
-		//SQLHelp.Load(DB.tasks,DB.categories);//Not working.
 		DB.categories=SQLHelp.getCategorys();
         DB.tasks=SQLHelp.getTasks(DB.categories);
         SQLHelp.close();
         
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
-//        taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
 		taskListView.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
