@@ -50,7 +50,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 	
 	private Task currentTask = null;
 	private Category currentCategory = null;
-	private TaskArrayAdapter2 taskAdapter;
+	private TaskArrayAdapter taskAdapter;
 	private CategoryArrayAdapter categoryAdapter;
 	private ListView taskListView;
 	private HorizontalListView categoryListView;
@@ -89,7 +89,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
         
 		taskListView = (ListView) findViewById(R.id.lv_tasks);
 //        taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
-		taskAdapter = new TaskArrayAdapter2(getApplicationContext(), DB.tasks);
+		taskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		taskListView.setAdapter(taskAdapter);
 		taskListView.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
 		taskListView.addHeaderView(transView(100));

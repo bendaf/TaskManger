@@ -1,10 +1,6 @@
 package hu.trio.taskActivity;
 
-import hu.trio.database.SQLiteHelper;
 import hu.trio.taskmanager.R;
-import hu.trio.taskmanager.R.id;
-import hu.trio.taskmanager.R.layout;
-import hu.trio.taskmanager.R.string;
 import hu.trio.tasks.Category;
 import hu.trio.tasks.Task;
 
@@ -15,10 +11,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,65 +27,36 @@ public class TaskArrayAdapter extends BaseAdapter {
 		TextView tvTaskReqTime;
 	}
 	
-	private ArrayList<Task> taskList = new ArrayList<Task>();
-	private SwipeTouchListener listener;
-    private View swiped = null;
-    private Integer swipedPos = -1;
-    private LayoutInflater inflater;
-    private Resources res;
-    private SQLiteHelper SQLHelp;
-
-    public TaskArrayAdapter(Context context, ArrayList<Task> tasks) {
-        this.taskList=tasks;
-        inflater = LayoutInflater.from(context);
-        res = context.getResources();
-        SQLHelp = new SQLiteHelper(context);
-        this.listener=new SwipeTouchListener(context, R.id.rtl_taskItem, new SwipeListener() {
-			public void onFirstClick(View v) {}
-			
-			@Override
-			public void onSwipeRight(View v) {
-				int pos = (Integer)v.getTag();
-				taskList.get(pos).setDone(!taskList.get(pos).isDone());
-				notifyDataSetChanged();
-			}
-
-			@Override
-			public void onSwipeLeft(View v) {
-				SQLHelp.open();
-				SQLHelp.deleteTask(taskList.get((Integer) v.getTag()));
-		        SQLHelp.close();
-				taskList.remove(taskList.get((Integer) v.getTag()));
-				notifyDataSetChanged();
-//				swiped = null;
-//				swipedPos = -1;
-			}
-
-			@Override
-			public void onLongClick(View v) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-    }
-    
+	private ArrayList<Task> mTaskList = new ArrayList<Task>();
+	private Context context;
+	private TextView tvTaskTitle;
+	
+	public TaskArrayAdapter(Context context, ArrayList<Task> tasks) {
+		mTaskList = tasks;
+        this.context = context;
+		
+	}
 	@Override
 	public int getCount() {
-		return taskList.size();
+		return mTaskList.size();
 	}
 
 	@Override
 	public Task getItem(int position) {
-		return taskList.get(position);
+		return mTaskList.get(position);
 	}
 
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+	@Override
+	public long getItemId(int position) {
+		return position;
+	}
+
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
         VH taskView = new VH();
-        boolean isSwiped = position == swipedPos ? true : false;
-//	    if (convertView == null) {
+	    if (convertView == null) {
 			// futasi idoben betoltunk egy layout-ot a LayoutInfalter-el:
-//			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.task_item, parent, false);
 			/*
 			 * Ezzel a betoltessel hatarozzuk meg, hogy milyen szerkezete legyen a lista elemeknek
@@ -100,45 +65,43 @@ public class TaskArrayAdapter extends BaseAdapter {
 			taskView.tvTaskTitle = (TextView) convertView.findViewById(R.id.tv_taskTitle);
 			taskView.tvTaskEndDate = (TextView) convertView.findViewById(R.id.tv_taskEndDate);
 			taskView.tvTaskReqTime = (TextView) convertView.findViewById(R.id.tv_taskReqTime);
-	        convertView.setOnTouchListener(listener);
-	        convertView.setTag(position);
 //	        if(isSwiped){
 //	        	listener.setSwipe(convertView,true);
 //	        	swiped = convertView;
 //	        }
-//			convertView.setTag(tvTaskTitle);
-//	    } else {
-//	    	tvTaskTitle = (TextView) convertView.getTag();
-//	    }
+			convertView.setTag(taskView);
+	    } else {
+	    	taskView = (VH) convertView.getTag();
+	    }
 	        
 	    //Set taskitem's fields
-	    taskView.tvTaskTitle.setText(taskList.get(position).getTitle().toString());
+	    taskView.tvTaskTitle.setText(mTaskList.get(position).getTitle().toString());
 	    try{
 	    	Date now = new Date();
-	    	if(now.getTime() < taskList.get(position).getEndDate().getTime()){
-	    		long diff = taskList.get(position).getEndDate().getTime() - now.getTime();
+	    	if(now.getTime() < mTaskList.get(position).getEndDate().getTime()){
+	    		long diff = mTaskList.get(position).getEndDate().getTime() - now.getTime();
 	    		taskView.tvTaskEndDate.setText(
-	    				formatDate(new Date(diff),res.getString(R.string.remaining)));
+	    				formatDate(new Date(diff),context.getResources().getString(R.string.remaining)));
 	    	}else{
-	    		taskView.tvTaskEndDate.setText(res.getString(R.string.expired));
+	    		taskView.tvTaskEndDate.setText(context.getResources().getString(R.string.expired));
 	    	}
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskEndDate.setText("");
 	    }
 	    try{
-	    	taskView.tvTaskReqTime.setText(formatDate(taskList.get(position).getRequiredTime(),
-	    								   res.getString(R.string.task_req_time)));
+	    	taskView.tvTaskReqTime.setText(formatDate(mTaskList.get(position).getRequiredTime(),
+	    								   context.getResources().getString(R.string.task_req_time)));
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskReqTime.setText("");
 	    }
 	    
 	    //Set background shape of taskitem
 	    GradientDrawable shape = (GradientDrawable)convertView.getBackground();
-	    boolean isDone = taskList.get(position).isDone();
-	    if(taskList.get(position).getCategories().size()>0){
-	    	if(taskList.get(position).getCategories().size()>1){
+	    boolean isDone = mTaskList.get(position).isDone();
+	    if(mTaskList.get(position).getCategories().size()>0){
+	    	if(mTaskList.get(position).getCategories().size()>1){
 	    		List<Integer> colorArray = new ArrayList<>();
-		    	for(Category idCategory : taskList.get(position).getCategories()){
+		    	for(Category idCategory : mTaskList.get(position).getCategories()){
 		    		colorArray.add(isDone ? idCategory.getDarkerColor() : idCategory.getColor());
 		    	}
 		    	shape.mutate();
@@ -146,8 +109,8 @@ public class TaskArrayAdapter extends BaseAdapter {
 		    	shape.setColors(convertIntegers(colorArray));
 	    	}else{
 	    		shape.mutate();
-	    		shape.setColor(isDone ? taskList.get(position).getCategories().get(0).getDarkerColor() :
-	    								taskList.get(position).getCategories().get(0).getColor());
+	    		shape.setColor(isDone ? mTaskList.get(position).getCategories().get(0).getDarkerColor() :
+	    								mTaskList.get(position).getCategories().get(0).getColor());
 	    	}	
 	    }else{
 	    	shape.mutate();
@@ -155,42 +118,37 @@ public class TaskArrayAdapter extends BaseAdapter {
 //	    	Log.d("erdekel", taskList.get(position).getTitle().toString());
 	    }
 	    return convertView;
-    }
-
+	}
+	
+//	public void remove(Task item) {
+//		mTaskList.remove(item);
+//	}
+	
 	private String formatDate(Date endDate, String comment) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(endDate);
 		String month = 
 				cal.get(Calendar.MONTH)>0 ? 
 						Integer.toString(cal.get(Calendar.MONTH) + 1) + " " + 
-						res.getString(R.string.month) + " " : "";
+						context.getResources().getString(R.string.month) + " " : "";
 //		Log.i("erdekel", "mo: " + Integer.toString(cal.get(Calendar.MONTH)));
 		String day =
 				cal.get(Calendar.DAY_OF_MONTH) > 1 ?
 						Integer.toString(cal.get(Calendar.DAY_OF_MONTH) - 1) + 
-						" " + res.getString(R.string.day) + " " : "";
+						" " + context.getResources().getString(R.string.day) + " " : "";
 //		Log.i("erdekel", "d: " + Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
 		String hour = 
 				cal.get(Calendar.HOUR_OF_DAY) > 1 ? 
 						Integer.toString(cal.get(Calendar.HOUR_OF_DAY) - 1) + 
-						" " + res.getString(R.string.hour) + " " : "";
+						" " + context.getResources().getString(R.string.hour) + " " : "";
 //		Log.i("erdekel", "h: " + Integer.toString(cal.get(Calendar.HOUR_OF_DAY)));
 		String minute =
 				cal.get(Calendar.MINUTE) > 0 ? 
 						Integer.toString(cal.get(Calendar.MINUTE)) + " " + 
-						res.getString(R.string.minute) + " " : "";
+						context.getResources().getString(R.string.minute) + " " : "";
 //		Log.i("erdekel", "mi: " +Integer.toString(cal.get(Calendar.MINUTE)));
 		String together = month + day + hour + minute; 
 		return together.isEmpty() ? "" : together + comment;
-	}
-
-	@Override
-	public long getItemId(int position) {
-		return position;
-	}
-
-	public int getSelected() {
-		return swipedPos;
 	}
 	
 	public static int[] convertIntegers(List<Integer> integers)
