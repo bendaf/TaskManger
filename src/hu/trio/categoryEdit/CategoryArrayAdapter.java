@@ -16,24 +16,24 @@ import android.widget.TextView;
 
 public class CategoryArrayAdapter extends BaseAdapter {
 
-	class VH{
+	private class VH{
 		View vInnerCircle;
 		View vOuterCircle;
 		TextView tvTitle;
 	}
 	
-	public int[] categoryColors;
+	public int[] catColors;
 	
-	LayoutInflater inflater;
-	ArrayList<Category> categories = new ArrayList<>(); 
-	ArrayList<Integer> reservedCategories = new ArrayList<>();
-	Category all;
+	private LayoutInflater inflater;
+	private ArrayList<Category> categories = new ArrayList<>(); 
+	private ArrayList<Integer> reservedCategories = new ArrayList<>();
+	private Category all;
 
 	public CategoryArrayAdapter(Context context, ArrayList<Category> categories) {
 		inflater = LayoutInflater.from(context);
 		this.categories = categories;
 		all = new Category(context.getString(R.string.all),Color.GRAY);
-		categoryColors=context.getResources().getIntArray(R.array.categories);
+		catColors=context.getResources().getIntArray(R.array.categories);
 		refreshResCategories();
 	}
 	
@@ -57,51 +57,49 @@ public class CategoryArrayAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		VH categoryView;
-		position--;
-		if(parent.getTag() != null && (Integer)parent.getTag() == 2){
-			Log.d("erdekel", Integer.toString(position));
-		}else{
+		position--;  //because of the all category
+		
+		if(!(parent.getTag() != null && (Integer)parent.getTag() == 2)){
 			if(position!=-1) position = reservedCategories.get(position);
 		}
-//		if (convertView == null) {
+		
+		if (convertView == null) {
             convertView = inflater.inflate(R.layout.category_item, parent, false);
             categoryView = new VH();
             categoryView.tvTitle = (TextView) convertView.findViewById(R.id.tv_categoryTitle);
             categoryView.vInnerCircle = (View) convertView.findViewById(R.id.v_categoryInnerCircle);
             categoryView.vOuterCircle = (View) convertView.findViewById(R.id.v_categoryOuterCircle);
-//            convertView.setTag(categoryView);
+            convertView.setTag(categoryView);
 
-//        } else {
-//        	categoryView = (VH) convertView.getTag();
-//        }
+        } else {
+        	categoryView = (VH) convertView.getTag();
+        }
+		
 		try{
 			categoryView.tvTitle.setText(categories.get(position).getTitle().toString());
-
 			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
 			GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
-			iCircle.mutate();
-			iCircle.setColor(categories.get(position).getColor());
-			oCircle.setColor(categories.get(position).getDarkerColor());
+			setCategoryColor(iCircle, oCircle, categories.get(position).getColor());	
 		}catch(IndexOutOfBoundsException e){
+			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
+			GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
 			if(position == - 1 ){
 				categoryView.tvTitle.setText(all.getTitle().toString());
-				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
-				GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
-				iCircle.mutate();
-				iCircle.setColor(Color.GRAY);
-				oCircle.setColor(Category.darkerColor(Color.GRAY));
+				setCategoryColor(iCircle, oCircle, all.getColor());
 			}else{
 				categoryView.tvTitle.setText("");
-				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
-				GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
-				iCircle.mutate();
-				iCircle.setColor(categoryColors[position-1]);
-				oCircle.setColor(Category.darkerColor(categoryColors[position-1]));
+				setCategoryColor(iCircle, oCircle, catColors[position-1]);
 			}
 		}
         return convertView;
 	}
 	
+	private void setCategoryColor(GradientDrawable iCircle, GradientDrawable oCircle, int color){
+		iCircle.mutate();
+		iCircle.setColor(color);
+		oCircle.setColor(Category.darkerColor(color));
+		
+	}
 	@Override
 	public void notifyDataSetChanged(){
 		super.notifyDataSetChanged();

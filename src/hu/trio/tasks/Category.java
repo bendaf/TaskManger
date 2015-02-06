@@ -1,14 +1,15 @@
 package hu.trio.tasks;
 
 import android.graphics.Color;
+import android.nfc.FormatException;
 
 public class Category {
 	private String title;
 	private int color;  //Uses android.graphics.color to convert
 	
-	public Category(String title, int rgb) {
+	public Category(String title, int color) {
 		this.title=title;
-		this.color=rgb;
+		this.color=color;
 	}
 	public String getTitle() {
 		return new String(title);
@@ -29,9 +30,13 @@ public class Category {
 		this.color = Color.parseColor(colorString);
 	}
 	public static int darkerColor(int color){
-		return darkerColor(color,0.8f);
+		try {
+			color = darkerColor(color,0.8f);
+		} catch (FormatException e) {}
+		return color;
 	}
-	public static int darkerColor(int color, float ratio){
+	public static int darkerColor(int color, float ratio) throws FormatException{
+		if(ratio>1 || ratio<0) throw new FormatException("Ratio must be between 0 and 1");
 		float[] hsv = new float[3];
 		Color.colorToHSV(color, hsv);
 		hsv[2] *= ratio; // value component

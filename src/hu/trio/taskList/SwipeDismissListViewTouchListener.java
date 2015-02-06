@@ -18,6 +18,14 @@
 
 package hu.trio.taskList;
 
+import static com.nineoldandroids.view.ViewHelper.setAlpha;
+import static com.nineoldandroids.view.ViewHelper.setTranslationX;
+import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -30,14 +38,6 @@ import android.widget.ListView;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorListenerAdapter;
 import com.nineoldandroids.animation.ValueAnimator;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static com.nineoldandroids.view.ViewHelper.setAlpha;
-import static com.nineoldandroids.view.ViewHelper.setTranslationX;
-import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
 
 /**
  * A {@link android.view.View.OnTouchListener} that makes the list items in a {@link ListView}
@@ -87,7 +87,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
     // Fixed properties
     private ListView mListView;
-    private OnDismissCallback mCallback;
+    private OnSwipeCallback mCallback;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
     // Transient properties
@@ -106,7 +106,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
      * The callback interface used by {@link SwipeDismissListViewTouchListener} to inform its client
      * about a successful dismissal of one or more list item positions.
      */
-    public interface OnDismissCallback {
+    public interface OnSwipeCallback {
         /**
          * Called when the user has indicated they she would like to dismiss one or more list item
          * positions.
@@ -126,7 +126,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
      * @param callback The callback to trigger when the user has indicated that she would like to
      *                 dismiss one or more list items.
      */
-    public SwipeDismissListViewTouchListener(ListView listView, OnDismissCallback callback, int frontViewId) {
+    public SwipeDismissListViewTouchListener(ListView listView, OnSwipeCallback callback, int frontViewId) {
         ViewConfiguration vc = ViewConfiguration.get(listView.getContext());
         mSlop = vc.getScaledTouchSlop();
         mMinFlingVelocity = vc.getScaledMinimumFlingVelocity();
@@ -283,10 +283,10 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     // cancel
                     animate(mDownView).translationX(0).alpha(1).setDuration(mAnimationTime).setListener(null);
                 }
-                mVelocityTracker = null;
-//                if(mVelocityTracker != null){
-//                	mVelocityTracker.recycle();
-//                }
+                if(mVelocityTracker != null){
+                	mVelocityTracker.recycle();
+                    mVelocityTracker = null;
+                }
                 mDownX = 0;
                 mDownView = null;
                 mDownPosition = ListView.INVALID_POSITION;
