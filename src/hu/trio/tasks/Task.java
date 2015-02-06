@@ -77,7 +77,6 @@ public class Task {
 		boolean isInCategories = false;
 		for(Category idCat : categories){
 			if(idCat.getColor() == cat.getColor())isInCategories = true;
-//			Log.d("erdekel", Integer.toString(idCat.getColor()) + " " + Integer.toString(cat.getColor()));
 		}
 		return isInCategories;
 	}

@@ -2,16 +2,11 @@ package hu.trio.categoryEdit;
 
 import hu.trio.database.SQLiteHelper;
 import hu.trio.taskmanager.R;
-import hu.trio.taskmanager.R.id;
-import hu.trio.taskmanager.R.layout;
-import hu.trio.taskmanager.R.string;
 import hu.trio.tasks.Category;
-import hu.trio.tasks.Task;
 
 import java.util.ArrayList;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;

@@ -29,7 +29,6 @@ public class TaskArrayAdapter extends BaseAdapter {
 	
 	private ArrayList<Task> mTaskList = new ArrayList<Task>();
 	private Context context;
-	private TextView tvTaskTitle;
 	
 	public TaskArrayAdapter(Context context, ArrayList<Task> tasks) {
 		mTaskList = tasks;

@@ -1,9 +1,6 @@
 package hu.trio.categoryEdit;
 
 import hu.trio.taskmanager.R;
-import hu.trio.taskmanager.R.id;
-import hu.trio.taskmanager.R.layout;
-import hu.trio.taskmanager.R.string;
 import hu.trio.tasks.Category;
 
 import java.util.ArrayList;
@@ -11,7 +8,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,7 +75,6 @@ public class CategoryArrayAdapter extends BaseAdapter {
 //        	categoryView = (VH) convertView.getTag();
 //        }
 		try{
-//			Log.d("erdekel", categories.get(position).getTitle().toString());
 			categoryView.tvTitle.setText(categories.get(position).getTitle().toString());
 
 			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
@@ -88,7 +83,6 @@ public class CategoryArrayAdapter extends BaseAdapter {
 			iCircle.setColor(categories.get(position).getColor());
 			oCircle.setColor(categories.get(position).getDarkerColor());
 		}catch(IndexOutOfBoundsException e){
-			//Log.d("erdekel", "No such a category: " + Integer.toString(position));
 			if(position == - 1 ){
 				categoryView.tvTitle.setText(all.getTitle().toString());
 				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
@@ -118,7 +112,6 @@ public class CategoryArrayAdapter extends BaseAdapter {
 		reservedCategories.clear();
 		for(int i=0;i<categories.size();i++){
 			if(!categories.get(i).getTitle().equals("")){
-//				Log.d("erdekel", Integer.toString(i));
 				reservedCategories.add(i);
 			}
 		}

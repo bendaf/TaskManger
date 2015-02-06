@@ -19,7 +19,6 @@
 package hu.trio.taskList;
 
 import android.graphics.Rect;
-import android.graphics.drawable.GradientDrawable;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;

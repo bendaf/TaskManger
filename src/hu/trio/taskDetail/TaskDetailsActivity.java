@@ -1,7 +1,6 @@
 package hu.trio.taskDetail;
 
 import hu.trio.taskmanager.R;
-import hu.trio.taskmanager.R.layout;
 import android.app.Activity;
 import android.os.Bundle;
 

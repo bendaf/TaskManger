@@ -8,8 +8,6 @@ import hu.trio.tasks.Category;
 import hu.trio.tasks.Task;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -19,12 +17,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.LayoutParams;
 import android.widget.AdapterView;
@@ -110,7 +106,6 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 							@Override
 							public void onChangeDone(ListView listView, int pos) {
 								SQLHelp.open();
-								//taskAdapter.getItem(pos).setDone(!taskAdapter.getItem(pos).isDone());
 								DB.tasks.get(pos).setDone(!DB.tasks.get(pos).isDone());
 								SQLHelp.modifyTask(DB.tasks.get(pos));
 						        SQLHelp.close();
@@ -144,13 +139,6 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 				//DB.tasks=SQLHelp.getTasks(DB.categories);
 				SQLHelp.close();
 				
-				//ha sikerült megy tovább. amúgy lehet hibaüzenet.
-				Dialog d=new Dialog(this);
-				TextView tv=new TextView(this);
-				d.setTitle("Task adding");
-				tv.setText("Worked");
-				d.setContentView(tv);
-//				d.show();
 			}catch(Exception e){ ///TODO 
 				
 			}
@@ -202,11 +190,6 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
         categories.add(new Category("",catColors[14]));
         categories.add(new Category("",catColors[15]));
         
-        Calendar c = Calendar.getInstance();
-        c.setTime(new Date());
-        c.add(Calendar.MINUTE, 2);
-//		tasks.get(0).setEndDate(c.getTime());
-//		tasks.get(2).setRequiredTime(new Date(360000*2));
         
         Random r = new Random();
 		for(Task idTask : tasks){
