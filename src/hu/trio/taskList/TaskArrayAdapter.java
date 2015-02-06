@@ -19,8 +19,20 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * This Adapter extends {@link android.widget.BaseAdapter} for {@link hu.trio.tasks.Task}.
+ * 
+ * @author bendaf
+ *
+ */
 public class TaskArrayAdapter extends BaseAdapter {
 
+	/**
+	 * This ViewHolder contains the views of a task.
+	 * 
+	 * @author bendaf
+	 *
+	 */
 	class VH{
 		TextView tvTaskTitle;
 		TextView tvTaskEndDate;
@@ -54,13 +66,11 @@ public class TaskArrayAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
         VH taskView = new VH();
 	    if (convertView == null) {
-			// futasi idoben betoltunk egy layout-ot a LayoutInfalter-el:
+			// Load a layout with the layout inflater
 			LayoutInflater inflater = (LayoutInflater) mcontext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.task_item, parent, false);
-			/*
-			 * Ezzel a betoltessel hatarozzuk meg, hogy milyen szerkezete legyen a lista elemeknek
-			 */
 			
+			// Set the views of the list item
 			taskView.tvTaskTitle = (TextView) convertView.findViewById(R.id.tv_taskTitle);
 			taskView.tvTaskEndDate = (TextView) convertView.findViewById(R.id.tv_taskEndDate);
 			taskView.tvTaskReqTime = (TextView) convertView.findViewById(R.id.tv_taskReqTime);
@@ -71,8 +81,10 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    }
 	        
 	    //Set taskitem's fields
+	    ///Set title
 	    taskView.tvTaskTitle.setText(mTaskList.get(position).getTitle().toString());
 	    
+	    ///Set endDate
 	    try{ 
 	    	Date now = new Date();
 	    	if(now.getTime() < mTaskList.get(position).getEndDate().getTime()){
@@ -86,6 +98,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    	taskView.tvTaskEndDate.setText("");
 	    }
 	    
+	    ///Set requiredTime
 	    try{
 	    	taskView.tvTaskReqTime.setText(formatDate(mTaskList.get(position).getRequiredTime(),
 	    								   mcontext.getResources().getString(R.string.task_req_time)));
@@ -93,7 +106,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    	taskView.tvTaskReqTime.setText("");
 	    }
 	    
-	    //Set background shape of taskitem
+	    //Set background shape of taskItem
 	    GradientDrawable shape = (GradientDrawable)convertView.getBackground();
 	    boolean isDone = mTaskList.get(position).isDone();
 	    ArrayList<Category> categoriesOfTask = mTaskList.get(position).getCategories();
@@ -120,11 +133,13 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    return convertView;
 	}
 	
+	//Set the color of the shape 
 	private void setColorOfShape(GradientDrawable shape, int color, boolean isDone){
 		shape.mutate();
     	shape.setColor(isDone ? Category.darkerColor(color) : color);
 	}
 	
+	//Format the date and add comment to the end
 	private String formatDate(Date date, String comment) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -152,6 +167,11 @@ public class TaskArrayAdapter extends BaseAdapter {
 		return together.isEmpty() ? "" : together + comment;
 	}
 	
+	/**
+	 * Convert List<Integer> to int array.  
+	 * @param integers the list of integer.
+	 * @return an int array
+	 */
 	public static int[] convertIntegers(List<Integer> integers)
 	{
 	    int[] ret = new int[integers.size()];

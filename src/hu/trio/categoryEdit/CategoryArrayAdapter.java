@@ -14,16 +14,30 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+/**
+ * This extension of {@link android.widget.BaseAdapter} make a specific adapter for 
+ * {@link hu.trio.tasks.Category}.
+ *  
+ * This adapter is specific because acts like if it would hold only the categories with names
+ * but it holds all 16 categories and displays only the ones with name. 
+ * The 0. category is always the 'all' category what is not in the category array. 
+ * 
+ * @author bendaf
+ *
+ */
 public class CategoryArrayAdapter extends BaseAdapter {
 
+	//contains the views of a category
 	private class VH{
 		View vInnerCircle;
 		View vOuterCircle;
 		TextView tvTitle;
 	}
 	
+	// this array contains the category colors
 	public int[] catColors;
 	
+	//private fields
 	private LayoutInflater inflater;
 	private ArrayList<Category> categories = new ArrayList<>(); 
 	private ArrayList<Integer> reservedCategories = new ArrayList<>();
@@ -60,6 +74,8 @@ public class CategoryArrayAdapter extends BaseAdapter {
 		position--;  //because of the all category
 		
 		if(!(parent.getTag() != null && (Integer)parent.getTag() == 2)){
+			// In a specific case the getView returns with all the view in the index of all the 16 
+			// category
 			if(position!=-1) position = reservedCategories.get(position);
 		}
 		
@@ -75,6 +91,7 @@ public class CategoryArrayAdapter extends BaseAdapter {
         	categoryView = (VH) convertView.getTag();
         }
 		
+		//Set the properties of the category view
 		try{
 			categoryView.tvTitle.setText(categories.get(position).getTitle().toString());
 			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
@@ -94,6 +111,7 @@ public class CategoryArrayAdapter extends BaseAdapter {
         return convertView;
 	}
 	
+	//Set the color of the inner and outer circle of the category
 	private void setCategoryColor(GradientDrawable iCircle, GradientDrawable oCircle, int color){
 		iCircle.mutate();
 		iCircle.setColor(color);
@@ -106,6 +124,7 @@ public class CategoryArrayAdapter extends BaseAdapter {
 		refreshResCategories();
 	}
 	
+	//Refresh the indexes of the available categories from categories array to reservedCategories
 	private void refreshResCategories(){
 		reservedCategories.clear();
 		for(int i=0;i<categories.size();i++){

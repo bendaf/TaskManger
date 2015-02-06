@@ -37,24 +37,38 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.devsmart.android.ui.HorizontalListView;
 
+/**
+ * This {@link android.app.Activity} does the most of the functions of the app. 
+ * Displays the {@link hu.trio.tasks.Category}s, the {@link hu.trio.tasks.Task}s. 
+ * The user can add new Tasks to the taskList, filter the tasks by categories, 
+ * remove, set tasks done or they can search between tasks. 
+ * There is a lot of possible funtion what is not implemented yet. 
+ * 
+ * @author Felicián
+ *
+ */
 public class TasksActivity extends Activity implements 
 				OnItemLongClickListener, OnItemClickListener, OnClickListener{
 	
+	// This contains the tasks and the categories
 	private static final class DB{
 		static ArrayList<Category> categories = new ArrayList<>();
 		static ArrayList<Task> tasks = new ArrayList<>();
 	}
 	
+	// private views
 	private ListView lvTask;
 	private HorizontalListView lvCategory;
 	private EditText etAddNewTask;
 	private RelativeLayout rtlAddNewTask;
 	private Button btnSearch;
 	
+	// State variables
 	//private Task currentTask = null;
 	private Category currentCategory = null;
 	private Boolean isSearching = false;
 	
+	// Private fields
 	private TaskArrayAdapter mTaskAdapter;
 	private CategoryArrayAdapter mCategoryAdapter;
 	private SQLiteHelper SQLHelp;
@@ -64,12 +78,15 @@ public class TasksActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_tasks);
 		
+		// Initialize database
 		SQLHelp = new SQLiteHelper(getApplicationContext());
 		SQLHelp.open();
 		DB.categories=SQLHelp.getCategorys();
         DB.tasks=SQLHelp.getTasks(DB.categories);
         SQLHelp.close();
         
+		// Initialize views
+        /// addNewTask Button
 		rtlAddNewTask = (RelativeLayout) findViewById(R.id.rtl_center);
 		etAddNewTask = (EditText) findViewById(R.id.et_center);
 		etAddNewTask.setOnEditorActionListener(new OnEditorActionListener() {
@@ -94,9 +111,11 @@ public class TasksActivity extends Activity implements
 			}
 		});
 		
+		/// search Button
 		btnSearch = (Button) findViewById(R.id.btn_right);
 		btnSearch.setOnClickListener(this);
 		
+		/// listView of Tasks
 		lvTask = (ListView) findViewById(R.id.lv_tasks);
 		mTaskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
 		lvTask.setAdapter(mTaskAdapter);
@@ -108,6 +127,7 @@ public class TasksActivity extends Activity implements
 						new SwipeDismissListViewTouchListener.OnSwipeCallback() {
 							@Override
 							public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+								// Delete tasks when dismiss
 								SQLHelp.open();
 								for(int position : reverseSortedPositions){
 									SQLHelp.deleteTask(mTaskAdapter.getItem(position));
@@ -120,6 +140,7 @@ public class TasksActivity extends Activity implements
 
 							@Override
 							public void onChangeDone(ListView listView, int pos) {
+								// Set tasks done when swipe right. 
 								SQLHelp.open();
 								DB.tasks.get(pos).setDone(!DB.tasks.get(pos).isDone());
 								SQLHelp.modifyTask(DB.tasks.get(pos));
@@ -130,6 +151,7 @@ public class TasksActivity extends Activity implements
 		lvTask.setOnTouchListener(touchListener);
 		lvTask.setOnScrollListener(touchListener.makeScrollListener());
 		
+		/// ListView of Category 
         lvCategory = (HorizontalListView) findViewById(R.id.lv_categories);
 		mCategoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
 		lvCategory.setAdapter(mCategoryAdapter);
@@ -139,10 +161,10 @@ public class TasksActivity extends Activity implements
         if(false) loadJunkData(DB.tasks,DB.categories);
 	}
 	
-			// itt a generált adatokat berakom.
 	@Override
 	protected void onResume() {
 		super.onResume();
+		// Refresh the lists 
 		refreshCategoryList();
 		mCategoryAdapter.notifyDataSetChanged();
 		refreshTaskList();
@@ -152,6 +174,7 @@ public class TasksActivity extends Activity implements
 
 	@Override
 	public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
+		// Starts the category edit Activity
 		Intent startCategoryEdit = new Intent(this, CategoryEditActivity.class);
 		startActivity(startCategoryEdit);
 		return true;
@@ -159,12 +182,14 @@ public class TasksActivity extends Activity implements
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		// Change the current category
 		if(position < 1){
 			currentCategory = null;
 		}else{
 			currentCategory = mCategoryAdapter.getItem(position);
 		}
 		
+		// Refresh the view
 		refreshTaskList();
 		mTaskAdapter.notifyDataSetChanged();
 		refreshAddNewTaskRTL();
@@ -188,7 +213,6 @@ public class TasksActivity extends Activity implements
 					Task idTask = itask.next();
 					if(!containsIgnoreCase(idTask.getTitle(),searchString)) itask.remove();
 				}
-				//DB.tasks=SQLHelp.getTasks(DB.categories);
 				mTaskAdapter.notifyDataSetChanged();
 			}
 			break;
@@ -210,6 +234,10 @@ public class TasksActivity extends Activity implements
 		}
 	}
 	
+    /**
+     * Refresh the category list from database but not the view! 
+     * You have to notify the adapter from the changes
+     */
     public void refreshCategoryList() {
 		SQLHelp.open();
 		DB.categories.clear();
@@ -218,6 +246,10 @@ public class TasksActivity extends Activity implements
 		
 	}
 	
+	/**
+     * Refresh the task list from database but not the view! 
+     * You have to notify the adapter from the changes
+     */
 	public void refreshTaskList() {
 		SQLHelp.open();
 		ArrayList<Task> idTasks = SQLHelp.getTasks(DB.categories);
@@ -233,6 +265,9 @@ public class TasksActivity extends Activity implements
 		DB.tasks.addAll(idTasks);
 	}
 
+	/**
+	 *  Refresh the background of the AddNewTask RelativeLayout.
+	 */
 	public void refreshAddNewTaskRTL(){
 		if(currentCategory != null){
 			GradientDrawable shape = (GradientDrawable)rtlAddNewTask.getBackground();
@@ -243,16 +278,23 @@ public class TasksActivity extends Activity implements
 		}
 	}
 	
+	/**
+	 * Search in a string some other string. Not case sensitive. 
+	 * 
+	 * @param src The source string
+	 * @param searchString The searched string
+	 * @return True if the src contains the searchString
+	 */
 	public static boolean containsIgnoreCase(String src, String searchString) {
 	    final int length = searchString.length();
 	    if (length == 0)
 	        return true; // Empty string is contained
 
-		//convert dp to pixels
 	    final char firstLo = Character.toLowerCase(searchString.charAt(0));
 	    final char firstUp = Character.toUpperCase(searchString.charAt(0));
 
 	    for (int i = src.length() - length; i >= 0; i--) {
+	        // Quick check before calling the more expensive regionMatches() method:
 	        final char ch = src.charAt(i);
 	        if (ch != firstLo && ch != firstUp)
 	            continue;
@@ -264,6 +306,7 @@ public class TasksActivity extends Activity implements
 	    return false;
 	}
 	
+	// Add a the task to the database.
 	protected void addTask(Task parent, Task task){
 		SQLHelp.open();
 		SQLHelp.addTask(task);
@@ -276,6 +319,7 @@ public class TasksActivity extends Activity implements
 		}
 	}
 	
+	// Remove task from database.
 	protected void removeTask(Task parent, Task task){
 		SQLHelp.open();
 		SQLHelp.deleteTask(task);
@@ -288,6 +332,7 @@ public class TasksActivity extends Activity implements
 		}
 	}
 	
+	// Replace task in database
 	protected void replaceTask(Task parentTask, Task task, int index){
 		if(parentTask == null){
 			if(DB.tasks.remove(task)){
@@ -300,6 +345,7 @@ public class TasksActivity extends Activity implements
 		}
 	}
 	
+	// Return with the tasks in category
 	protected ArrayList<Task> getTasksOfCategory(Task parentTask, Category cat){
 		ArrayList<Task> reqCat = new ArrayList<>();
 		if(parentTask == null){
@@ -316,9 +362,11 @@ public class TasksActivity extends Activity implements
 		return reqCat;
 	}
 
+	// This make a view for header and footer
 	private View transView(int height) {
 		LinearLayout view = new LinearLayout(getApplicationContext());
 		view.setOrientation(LinearLayout.HORIZONTAL);
+		//convert dp to pixels
 		LayoutParams lp = new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
 						 (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 
 						  height, 

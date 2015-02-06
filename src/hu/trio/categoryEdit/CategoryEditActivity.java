@@ -20,12 +20,23 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
+/**
+ * This Activity manages the edition of the {@link hu.trio.tasks.Category}s. It has an 
+ * {@link android.widget.EditText} and a {@link android.widget.TableLayout}. 
+ * In the TableLeyout the user can choose a category and they can rename it with the EditText.
+ * The categories without name doesn't appear in the {@link hu.trio.taskList.TasksActivity}.   
+ * 
+ * @author bendaf
+ *
+ */
 public class CategoryEditActivity extends Activity implements OnClickListener, OnKeyListener {
 
+	//private views
 	private TableLayout tlCategories;
 	private View vSelected = null;
 	private EditText etCategoryName = null;
 	
+	//private properties
 	private CategoryArrayAdapter mCatAdapter;
 	private ArrayList<Category> mCategories;
 	private SQLiteHelper SQLHelp;
@@ -35,11 +46,13 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_category_edit);
 		
+		// Load the categories from database 
 		SQLHelp = new SQLiteHelper(getApplicationContext());
 		SQLHelp.open();
 		this.mCategories=SQLHelp.getCategorys();
         SQLHelp.close();
         
+        // Initialize views
         etCategoryName = (EditText) findViewById(R.id.et_category_name);
         etCategoryName.setOnKeyListener(this);
 		tlCategories = (TableLayout) findViewById(R.id.tl_categories);
@@ -50,6 +63,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 	@Override
 	public void onClick(View v) {
 		
+		// Select and change the shape of the clicked category and change back the shape of the previous. 
 		int tag = -1;
 		try{
 			tag = (Integer) v.getTag();
@@ -65,6 +79,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		}
 	}
 
+	// Change the shape of the view to the color
 	private void changeBackgroundOfView(View v, int color) {
 			View outerCircle = (View) v.findViewById(R.id.v_categoryOuterCircle);
 			GradientDrawable oCircle = (GradientDrawable) outerCircle.getBackground();
@@ -72,6 +87,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 			oCircle.setColor(color);
 	}
 	
+	// Set the text of the etcategoryName
 	private void selectCategory(int pos){
 		try{
 			etCategoryName.setText(mCategories.get(pos).getTitle());
@@ -84,6 +100,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+			// when the user pressed the enter key set the new name for the category
 			try{
 				int pos = (Integer)vSelected.getTag();
     	    	Category idCategory = mCategories.get(pos);
@@ -103,6 +120,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		return false;
 	}
 
+	// Redraw the table of the categories
 	private void drawTable(){
 		tlCategories.removeAllViews();
 		TableRow.LayoutParams rowParams=new TableRow.LayoutParams 

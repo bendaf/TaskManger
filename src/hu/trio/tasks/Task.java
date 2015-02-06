@@ -6,6 +6,14 @@ import java.util.Date;
 
 import android.util.Log;
 
+/**
+ * This object represetn a task what have a lot of properties:  id, title, description, 
+ * {@link hu.trio.tasks.Category}s, endDate, isDone, parentTask, subTasks, requiredTime.
+ * You can access to this properties with this class. 
+ * 
+ * @author bendaf
+ *
+ */
 public class Task {
 	
 	private static long counter;
@@ -115,6 +123,9 @@ public class Task {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	/**
+	 * @return description of the task. Can be null
+	 */
 	public String getDescription() {
 		try{
 			return new String(description);
@@ -125,6 +136,9 @@ public class Task {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	/**
+	 * @return end date of the task. Can be null
+	 */
 	public Date getEndDate() {
 		if(endDate != null)
 			return new Date(endDate.getTime());
@@ -144,6 +158,9 @@ public class Task {
 	public void restoreIsDone(){
 		isDone = lastIsDone;
 	}
+	/**
+	 * @return Parent task. Can be null.
+	 */
 	public Task getParentTask() {
 		try{
 			return new Task(parentTask);
@@ -151,6 +168,9 @@ public class Task {
 			return null;
 		}
 	}
+	/**
+	 * @return the required time of the task. Can be null!
+	 */ 
 	public Date getRequiredTime() {
 		if(requiredTime != null && childReqTime != null){
 			return new Date(requiredTime.getTime() > childReqTime.getTime() ? 

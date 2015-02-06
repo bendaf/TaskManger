@@ -104,7 +104,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
 
     /**
      * The callback interface used by {@link SwipeDismissListViewTouchListener} to inform its client
-     * about a successful dismissal of one or more list item positions.
+     * about a successful swipe of one or more list item positions.
      */
     public interface OnSwipeCallback {
         /**
@@ -116,6 +116,13 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
          *                               order for convenience.
          */
         void onDismiss(ListView listView, int[] reverseSortedPositions);
+        /**
+         * Called when the user has indicated thez would like to set done or undone one list 
+         * item position.
+         * 
+         * @param listView				The originating {@link ListView}.
+         * @param pos					The position to set done or undone.
+         */
         void onChangeDone(ListView listView, int pos);
     }
 
@@ -125,6 +132,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
      * @param listView The list view whose items should be dismissable.
      * @param callback The callback to trigger when the user has indicated that she would like to
      *                 dismiss one or more list items.
+     * @param frontViewId the id of the view what should swipe.
      */
     public SwipeDismissListViewTouchListener(ListView listView, OnSwipeCallback callback, int frontViewId) {
         ViewConfiguration vc = ViewConfiguration.get(listView.getContext());
