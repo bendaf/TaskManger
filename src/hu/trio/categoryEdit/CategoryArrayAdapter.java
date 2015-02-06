@@ -1,4 +1,4 @@
-package hu.trio.categoryEditView;
+package hu.trio.categoryEdit;
 
 import hu.trio.taskmanager.R;
 import hu.trio.taskmanager.R.id;

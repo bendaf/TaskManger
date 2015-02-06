@@ -1,4 +1,4 @@
-package hu.trio.taskActivity;
+package hu.trio.taskList;
 
 import hu.trio.taskmanager.R;
 import hu.trio.tasks.Category;

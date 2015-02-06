@@ -1,4 +1,4 @@
-package hu.trio.categoryEditView;
+package hu.trio.categoryEdit;
 
 import hu.trio.database.SQLiteHelper;
 import hu.trio.taskmanager.R;

@@ -1,4 +1,4 @@
-package hu.trio.taskDetailActivity;
+package hu.trio.taskDetail;
 
 import hu.trio.taskmanager.R;
 import hu.trio.taskmanager.R.layout;

@@ -1,7 +1,7 @@
-package hu.trio.taskActivity;
+package hu.trio.taskList;
 
-import hu.trio.categoryEditView.CategoryArrayAdapter;
-import hu.trio.categoryEditView.CategoryEditActivity;
+import hu.trio.categoryEdit.CategoryArrayAdapter;
+import hu.trio.categoryEdit.CategoryEditActivity;
 import hu.trio.database.SQLiteHelper;
 import hu.trio.taskmanager.R;
 import hu.trio.tasks.Category;

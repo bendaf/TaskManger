@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package hu.trio.taskActivity;
+package hu.trio.taskList;
 
 import android.graphics.Rect;
 import android.graphics.drawable.GradientDrawable;
