@@ -3,4 +3,23 @@
     <color name="background">#99000000</color>
     <color name="gray_transparent">#99666666</color>
     <color name="white_transparent">#80FFFFFF</color>
+    
+    <array name="categories">
+        <item>#FF88C158</item>
+        <item>#FFCB60F4</item>
+        <item>#FF1B7FFB</item>
+        <item>#FF1A9EC0</item>
+        <item>#FF6041BD</item>
+        <item>#FFC44770</item>
+        <item>#FFFC5929</item>
+        <item>#FFFD8124</item>
+        <item>#FFFECD30</item>
+        <item>#FFFFF85F</item>
+        <item>#FFCEC42A</item>
+        <item>#FF618938</item>
+        <item>#FFA5E8FD</item>
+        <item>#FFE9AAFD</item>
+        <item>#FFFEC3BC</item>
+        <item>#FFD5EAC3</item>
+    </array>
 </resources>
