@@ -1,19 +1,14 @@
 package hu.trio.tasks;
 
-import java.util.Random;
-
 import android.graphics.Color;
 
 public class Category {
 	private String title;
 	private int color;  //Uses android.graphics.color to convert
 	
-	public Category(String title){
+	public Category(String title, int rgb) {
 		this.title=title;
-		
-		//TODO Change this to choose a predefined color!
-		Random r = new Random();
-		this.color = Color.rgb(r.nextInt(255), r.nextInt(255), r.nextInt(255));
+		this.color=rgb;
 	}
 	public String getTitle() {
 		return new String(title);

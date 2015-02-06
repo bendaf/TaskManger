@@ -18,5 +18,6 @@
     <string name="all">All</string>
     <string name="name">Name</string>
     <string name="search">Search</string>
+    <string name="select_cat_first">You have to select a category first!</string>
 
 </resources>

@@ -245,7 +245,7 @@ public class SQLiteHelper {
         int titleRow=c.getColumnIndex(CATEGORY_TITLE);
         int colorRow=c.getColumnIndex(CATEGORY_COLOR);
         for(c.moveToFirst();!c.isAfterLast();c.moveToNext()){
-            Category u=new Category(c.getString(titleRow));
+            Category u=new Category(c.getString(titleRow),0);
             u.setColor(Color.alpha((int)c.getLong(colorRow)),
             		   Color.red((int)c.getLong(colorRow)),
             		   Color.green((int)c.getLong(colorRow)),

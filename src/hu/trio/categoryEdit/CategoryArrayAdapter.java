@@ -26,26 +26,31 @@ public class CategoryArrayAdapter extends BaseAdapter {
 		TextView tvTitle;
 	}
 	
+	public int[] categoryColors;
+	
 	LayoutInflater inflater;
 	ArrayList<Category> categories = new ArrayList<>(); 
+	ArrayList<Integer> reservedCategories = new ArrayList<>();
 	Category all;
 
 	public CategoryArrayAdapter(Context context, ArrayList<Category> categories) {
 		inflater = LayoutInflater.from(context);
 		this.categories = categories;
-		all = new Category(context.getString(R.string.all));
+		all = new Category(context.getString(R.string.all),Color.GRAY);
+		categoryColors=context.getResources().getIntArray(R.array.categories);
+		refreshResCategories();
 	}
 	
 	@Override
 	public int getCount() {
-		return categories.size() + 1;
+		return reservedCategories.size() + 1;
 	}
 
 	@Override
-	public Object getItem(int position) {
+	public Category getItem(int position) {
 		if(position == 0)
 			return all;
-		return categories.get(position - 1 );
+		return categories.get(reservedCategories.get(position - 1));
 	}
 
 	@Override
@@ -55,8 +60,13 @@ public class CategoryArrayAdapter extends BaseAdapter {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		position--; //because the 0th is our own category
 		VH categoryView;
+		position--;
+		if(parent.getTag() != null && (Integer)parent.getTag() == 2){
+			Log.d("erdekel", Integer.toString(position));
+		}else{
+			if(position!=-1) position = reservedCategories.get(position);
+		}
 //		if (convertView == null) {
             convertView = inflater.inflate(R.layout.category_item, parent, false);
             categoryView = new VH();
@@ -78,19 +88,39 @@ public class CategoryArrayAdapter extends BaseAdapter {
 			iCircle.setColor(categories.get(position).getColor());
 			oCircle.setColor(categories.get(position).getDarkerColor());
 		}catch(IndexOutOfBoundsException e){
-			Log.d("erdekel", "No such a category: " +Integer.toString(position));
-			if(position == -1){
+			//Log.d("erdekel", "No such a category: " + Integer.toString(position));
+			if(position == - 1 ){
 				categoryView.tvTitle.setText(all.getTitle().toString());
+				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
+				GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
+				iCircle.mutate();
+				iCircle.setColor(Color.GRAY);
+				oCircle.setColor(Category.darkerColor(Color.GRAY));
 			}else{
 				categoryView.tvTitle.setText("");
+				GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
+				GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
+				iCircle.mutate();
+				iCircle.setColor(categoryColors[position-1]);
+				oCircle.setColor(Category.darkerColor(categoryColors[position-1]));
 			}
-
-			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
-			GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
-			iCircle.mutate();
-			iCircle.setColor(Color.GRAY);
-			oCircle.setColor(Category.darkerColor(Color.GRAY));
 		}
         return convertView;
+	}
+	
+	@Override
+	public void notifyDataSetChanged(){
+		super.notifyDataSetChanged();
+		refreshResCategories();
+	}
+	
+	private void refreshResCategories(){
+		reservedCategories.clear();
+		for(int i=0;i<categories.size();i++){
+			if(!categories.get(i).getTitle().equals("")){
+//				Log.d("erdekel", Integer.toString(i));
+				reservedCategories.add(i);
+			}
+		}
 	}
 }

@@ -11,6 +11,7 @@ import hu.trio.tasks.Task;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.view.View.OnKeyListener;
 import android.widget.EditText;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 public class CategoryEditActivity extends Activity implements OnClickListener, OnKeyListener {
 
@@ -90,33 +92,32 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 	@Override
 	public boolean onKey(View v, int keyCode, KeyEvent event) {
 		if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-	          if(etCategoryName.getText().toString().equals("")){
-	        	  try{
-	        		  SQLHelp.open();
-	        		  SQLHelp.deleteCategory(categories.get((Integer)selectedView.getTag()));
-	        		  SQLHelp.close();
-	        		  categories.remove(categories.get((Integer)selectedView.getTag()));
-	        	  }catch(IndexOutOfBoundsException e){
-	        		  e.printStackTrace();
-	        	  }
-	          }else{
-	        	  try{
-	        		  Category idCategory = categories.get((Integer)selectedView.getTag());
-	        	  	  idCategory.setTitle(etCategoryName.getText().toString());
-	        		  SQLHelp.open();
-	        		  SQLHelp.modifyCategory(idCategory);
-	        		  SQLHelp.close();
-	        	  }catch(IndexOutOfBoundsException|NullPointerException e){
-	        		  Category idCategory = new Category(etCategoryName.getText().toString());
-	        		  categories.add(idCategory);
-	        		  SQLHelp.open();
-	        		  SQLHelp.addCategory(idCategory);
-	        		  SQLHelp.close();
-	        	  }
-	          }
-	          catAdapter.notifyDataSetChanged();
-	          drawTable();
-	          return true;
+			
+			try{
+				int pos = (Integer)selectedView.getTag();
+				String newName = etCategoryName.getText().toString();
+	    	    try{
+	    	    	Category idCategory = categories.get(pos);
+	    	  	    idCategory.setTitle(newName);
+	    		    SQLHelp.open();
+	    		    SQLHelp.modifyCategory(idCategory);
+	    		    SQLHelp.close();
+	    	    }catch(IndexOutOfBoundsException|NullPointerException e){
+	    		    int[] catColors = getResources().getIntArray(R.array.categories);
+	    		    Category idCategory = new Category(newName,catColors[pos]);
+	    		    categories.add(idCategory);
+	    		    SQLHelp.open();
+	    		    SQLHelp.addCategory(idCategory);
+	    		    SQLHelp.close();
+	    	    }
+	            catAdapter.notifyDataSetChanged();
+	            drawTable();
+			}catch(NullPointerException e){
+				Toast.makeText(getApplicationContext(), getResources().getString(R.string.select_cat_first),
+						   Toast.LENGTH_LONG).show();
+			}
+			
+            return true;
 		}
 		return false;
 	}
@@ -130,6 +131,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		for(int i = 0; i<4; i++){
 			TableRow tr = new TableRow(getApplicationContext());
 			tr.setLayoutParams(rowParams);
+			tr.setTag(2);
 			for(int j = 0; j<4; j++ ){ 
 				View v = catAdapter.getView(i*4+j + 1, null, tr);
 				v.setTag(i*4+j);

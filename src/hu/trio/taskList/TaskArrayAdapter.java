@@ -98,31 +98,34 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    //Set background shape of taskitem
 	    GradientDrawable shape = (GradientDrawable)convertView.getBackground();
 	    boolean isDone = mTaskList.get(position).isDone();
-	    if(mTaskList.get(position).getCategories().size()>0){
-	    	if(mTaskList.get(position).getCategories().size()>1){
+	    ArrayList<Category> categoriesOfTask = mTaskList.get(position).getCategories();
+	    if(categoriesOfTask.size()>0){
+	    	if(categoriesOfTask.size()>1){
 	    		List<Integer> colorArray = new ArrayList<>();
-		    	for(Category idCategory : mTaskList.get(position).getCategories()){
-		    		colorArray.add(isDone ? idCategory.getDarkerColor() : idCategory.getColor());
+		    	for(Category idCategory : categoriesOfTask){
+		    		if(!idCategory.getTitle().equals(""))
+		    			colorArray.add(isDone ? idCategory.getDarkerColor() : idCategory.getColor());
 		    	}
 		    	shape.mutate();
 		    	shape.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 		    	shape.setColors(convertIntegers(colorArray));
 	    	}else{
-	    		shape.mutate();
-	    		shape.setColor(isDone ? mTaskList.get(position).getCategories().get(0).getDarkerColor() :
-	    								mTaskList.get(position).getCategories().get(0).getColor());
+	    		if(!categoriesOfTask.get(0).getTitle().equals("")){
+		    		shape.mutate();
+		    		shape.setColor(isDone ? mTaskList.get(position).getCategories().get(0).getDarkerColor() :
+		    								mTaskList.get(position).getCategories().get(0).getColor());
+	    		}else{
+
+	    	    	shape.mutate();
+	    	    	shape.setColor(isDone ? Category.darkerColor(Color.GRAY) : Color.GRAY);
+	    		}
 	    	}	
 	    }else{
 	    	shape.mutate();
 	    	shape.setColor(isDone ? Category.darkerColor(Color.GRAY) : Color.GRAY);
-//	    	Log.d("erdekel", taskList.get(position).getTitle().toString());
 	    }
 	    return convertView;
 	}
-	
-//	public void remove(Task item) {
-//		mTaskList.remove(item);
-//	}
 	
 	private String formatDate(Date endDate, String comment) {
 		Calendar cal = Calendar.getInstance();

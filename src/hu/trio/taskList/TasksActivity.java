@@ -185,11 +185,24 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
         tasks.add(new Task("Fésülködés"));
         tasks.add(new Task("Fogmosás"));
         tasks.add(new Task("Gazsi felhív"));
-        
-        categories.add(new Category("Szülinapok"));
-        categories.add(new Category("Család"));
-        categories.add(new Category("Tanulás"));
-        categories.add(new Category("Munka"));
+
+		int[] catColors = getResources().getIntArray(R.array.categories);
+        categories.add(new Category("Munka",catColors[0]));
+        categories.add(new Category("Tanulás",catColors[1]));
+        categories.add(new Category("Család",catColors[2]));
+        categories.add(new Category("Szülinapok",catColors[3]));
+        categories.add(new Category("",catColors[4]));
+        categories.add(new Category("",catColors[5]));
+        categories.add(new Category("",catColors[6]));
+        categories.add(new Category("",catColors[7]));
+        categories.add(new Category("",catColors[8]));
+        categories.add(new Category("",catColors[9]));
+        categories.add(new Category("",catColors[10]));
+        categories.add(new Category("",catColors[11]));
+        categories.add(new Category("",catColors[12]));
+        categories.add(new Category("",catColors[13]));
+        categories.add(new Category("",catColors[14]));
+        categories.add(new Category("",catColors[15]));
         
         Calendar c = Calendar.getInstance();
         c.setTime(new Date());
@@ -322,7 +335,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		if(position < 1){
 			currentCategory = null;
 		}else{
-			currentCategory = DB.categories.get(position-1);
+			currentCategory = categoryAdapter.getItem(position);
 		}
 		refreshView();
 	}
