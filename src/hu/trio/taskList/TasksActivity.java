@@ -163,11 +163,9 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		SQLHelp.open();
 		DB.categories.clear();
 		DB.categories.addAll(SQLHelp.getCategorys());
-//        DB.tasks=SQLHelp.getTasks(DB.categories);
 		SQLHelp.close();
-//		taskAdapter.notifyDataSetChanged();
 		categoryAdapter.notifyDataSetChanged();
-//		Log.d("erdekel", "Notify");
+		refreshView();
 	}
 	
     private void loadJunkData(ArrayList<Task> tasks, ArrayList<Category> categories) {
@@ -235,9 +233,9 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 		SQLHelp.close();
 		
 		if(parent == null){
-			DB.tasks.add(task);
+			DB.tasks.add(0,task);
 		}else{
-			parent.addSubTask(task);
+			parent.addSubTask(0,task);
 		}
 	}
 	
@@ -352,6 +350,7 @@ public class TasksActivity extends Activity implements OnKeyListener, OnItemLong
 				imm.showSoftInput(addNewTaskEt, InputMethodManager.SHOW_IMPLICIT);
 			}else{
 				String searchString = addNewTaskEt.getText().toString();
+				refreshView();
 				Iterator<Task> itask = DB.tasks.iterator();
 				while(itask.hasNext()){
 					Task idTask = itask.next();
