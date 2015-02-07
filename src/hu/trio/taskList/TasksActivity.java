@@ -151,6 +151,8 @@ public class TasksActivity extends Activity implements
 		lvTask.setOnTouchListener(touchListener);
 		lvTask.setOnScrollListener(touchListener.makeScrollListener());
 		
+		
+		
 		/// ListView of Category 
         lvCategory = (HorizontalListView) findViewById(R.id.lv_categories);
 		mCategoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
