@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TaskManager</string>
+    <string name="action_settings">Beállítások</string>
+    <string name="title_activity_tasks">TasksActivity</string>
+    <string name="add_new_task">Feladat hozzáadása</string>
+    <string name="year">év</string>
+    <string name="month">hónap</string>
+    <string name="day">nap</string>
+    <string name="hour">óra</string>
+    <string name="minute">perc</string>
+    <string name="remaining">maradt</string>
+    <string name="task_req_time">ideig</string>
+    <string name="expired">lejárt</string>
+    <string name="now">most</string>
+    <string name="all">Összes</string>
+    <string name="name">Név</string>
+    <string name="search">Keresés</string>
+    <string name="select_cat_first">Először válassz egy kategóriát!</string>
+    <string name="sltd">Húzz balra a törléshez</string>
+    <string name="srtmd">Húzz jobbra, hogy késznek jelölj</string>
+    <string name="lpte">Kategóriát hosszan nyomva a szerkesztheted</string>
+    <string name="pctf">Válassz ki egy kategóriát a szűréshez</string>
+    <string name="home">Otthoni</string>
+    <string name="work">Munkahelyi</string>
+    <string name="starter">Példa</string>
+    
+</resources>
