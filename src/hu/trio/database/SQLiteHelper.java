@@ -79,9 +79,9 @@ public class SQLiteHelper {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_CONNECTION);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_TASKS);
 			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_CATEGORY);
-			db.execSQL("DROP TABLE IF EXISTS " + DATABASE_CONNECTION);
 			onCreate(db);
 		}
 	}
