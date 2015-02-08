@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -51,7 +52,7 @@ public class TasksActivity extends Activity implements
 				OnItemLongClickListener, OnItemClickListener, OnClickListener{
 	
 	// This contains the tasks and the categories
-	private static final class DB{
+	private static final class LD{
 		static ArrayList<Category> categories = new ArrayList<>();
 		static ArrayList<Task> tasks = new ArrayList<>();
 	}
@@ -67,6 +68,7 @@ public class TasksActivity extends Activity implements
 	//private Task currentTask = null;
 	private Category currentCategory = null;
 	private Boolean isSearching = false;
+	SharedPreferences mPrefs = null;
 	
 	// Private fields
 	private TaskArrayAdapter mTaskAdapter;
@@ -78,11 +80,21 @@ public class TasksActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.act_tasks);
 		
-		// Initialize database
+		// Initialize database and shared preferences
 		SQLHelp = new SQLiteHelper(getApplicationContext());
+		mPrefs = getSharedPreferences("hu.trio.taskmanager", MODE_PRIVATE); 
+//        mPrefs.edit().putBoolean("firstrun", true).commit();
+		
+        // Setup categories and tutorial
+		if (mPrefs.getBoolean("firstrun", true)) {
+			loadFirstData();
+            mPrefs.edit().putBoolean("firstrun", false).commit();
+        }
+		
+		// Load data from database
 		SQLHelp.open();
-		DB.categories=SQLHelp.getCategorys();
-        DB.tasks=SQLHelp.getTasks(DB.categories);
+		LD.categories=SQLHelp.getCategorys();
+        LD.tasks=SQLHelp.getTasks(LD.categories);
         SQLHelp.close();
         
 		// Initialize views
@@ -117,7 +129,7 @@ public class TasksActivity extends Activity implements
 		
 		/// listView of Tasks
 		lvTask = (ListView) findViewById(R.id.lv_tasks);
-		mTaskAdapter = new TaskArrayAdapter(getApplicationContext(), DB.tasks);
+		mTaskAdapter = new TaskArrayAdapter(getApplicationContext(), LD.tasks);
 		lvTask.setAdapter(mTaskAdapter);
 		lvTask.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
 		lvTask.addHeaderView(transView(100)); // This header and foother are below the categorybar 
@@ -131,7 +143,7 @@ public class TasksActivity extends Activity implements
 								SQLHelp.open();
 								for(int position : reverseSortedPositions){
 									SQLHelp.deleteTask(mTaskAdapter.getItem(position));
-									DB.tasks.remove(position);
+									LD.tasks.remove(position);
 									//taskAdapter.remove(taskAdapter.getItem(position));
 								}
 						        SQLHelp.close();
@@ -142,8 +154,8 @@ public class TasksActivity extends Activity implements
 							public void onChangeDone(ListView listView, int pos) {
 								// Set tasks done when swipe right. 
 								SQLHelp.open();
-								DB.tasks.get(pos).setDone(!DB.tasks.get(pos).isDone());
-								SQLHelp.modifyTask(DB.tasks.get(pos));
+								LD.tasks.get(pos).setDone(!LD.tasks.get(pos).isDone());
+								SQLHelp.modifyTask(LD.tasks.get(pos));
 						        SQLHelp.close();
 								mTaskAdapter.notifyDataSetChanged();
 							}
@@ -155,17 +167,16 @@ public class TasksActivity extends Activity implements
 		
 		/// ListView of Category 
         lvCategory = (HorizontalListView) findViewById(R.id.lv_categories);
-		mCategoryAdapter = new CategoryArrayAdapter(getApplicationContext(), DB.categories);
+		mCategoryAdapter = new CategoryArrayAdapter(getApplicationContext(), LD.categories);
 		lvCategory.setAdapter(mCategoryAdapter);
 		lvCategory.setOnItemLongClickListener(this);
 		lvCategory.setOnItemClickListener(this);
-        
-        if(false) loadJunkData(DB.tasks,DB.categories);
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
+		
 		// Refresh the lists 
 		refreshCategoryList();
 		mCategoryAdapter.notifyDataSetChanged();
@@ -210,7 +221,7 @@ public class TasksActivity extends Activity implements
 			}else{						// If searching then search on the string
 				String searchString = etAddNewTask.getText().toString();
 				refreshTaskList();
-				Iterator<Task> itask = DB.tasks.iterator();
+				Iterator<Task> itask = LD.tasks.iterator();
 				while(itask.hasNext()){
 					Task idTask = itask.next();
 					if(!containsIgnoreCase(idTask.getTitle(),searchString)) itask.remove();
@@ -242,8 +253,8 @@ public class TasksActivity extends Activity implements
      */
     public void refreshCategoryList() {
 		SQLHelp.open();
-		DB.categories.clear();
-		DB.categories.addAll(SQLHelp.getCategorys());
+		LD.categories.clear();
+		LD.categories.addAll(SQLHelp.getCategorys());
 		SQLHelp.close();
 		
 	}
@@ -254,7 +265,7 @@ public class TasksActivity extends Activity implements
      */
 	public void refreshTaskList() {
 		SQLHelp.open();
-		ArrayList<Task> idTasks = SQLHelp.getTasks(DB.categories);
+		ArrayList<Task> idTasks = SQLHelp.getTasks(LD.categories);
 		SQLHelp.close();
 		if(currentCategory != null){
 			Iterator<Task> itask = idTasks.iterator();
@@ -263,8 +274,8 @@ public class TasksActivity extends Activity implements
 				if(!idtask.isInTheCategory(currentCategory))itask.remove();
 			}	
 		}
-		DB.tasks.clear();
-		DB.tasks.addAll(idTasks);
+		LD.tasks.clear();
+		LD.tasks.addAll(idTasks);
 	}
 
 	/**
@@ -315,7 +326,7 @@ public class TasksActivity extends Activity implements
 		SQLHelp.close();
 		
 		if(parent == null){
-			DB.tasks.add(0,task);
+			LD.tasks.add(0,task);
 		}else{
 			parent.addSubTask(0,task);
 		}
@@ -328,7 +339,7 @@ public class TasksActivity extends Activity implements
 		SQLHelp.close();
 		
 		if(parent == null){
-			DB.tasks.remove(task);
+			LD.tasks.remove(task);
 		}else{
 			parent.removeSubTask(task);
 		}
@@ -337,8 +348,8 @@ public class TasksActivity extends Activity implements
 	// Replace task in database
 	protected void replaceTask(Task parentTask, Task task, int index){
 		if(parentTask == null){
-			if(DB.tasks.remove(task)){
-				DB.tasks.add(index, task);
+			if(LD.tasks.remove(task)){
+				LD.tasks.add(index, task);
 			}
 		}else{
 			if(parentTask.removeSubTask(task)){
@@ -351,7 +362,7 @@ public class TasksActivity extends Activity implements
 	protected ArrayList<Task> getTasksOfCategory(Task parentTask, Category cat){
 		ArrayList<Task> reqCat = new ArrayList<>();
 		if(parentTask == null){
-			for(Task idTask : DB.tasks){
+			for(Task idTask : LD.tasks){
 				reqCat.addAll(getTasksOfCategory(idTask, cat));
 				if(idTask.isInTheCategory(cat))reqCat.add(idTask);
 			}
@@ -377,28 +388,20 @@ public class TasksActivity extends Activity implements
 		return view;
 	}
 	
-	private void loadJunkData(ArrayList<Task> tasks, ArrayList<Category> categories) {
-        tasks.add(new Task("Bevásárlás"));
-        tasks.add(new Task("Séta"));
-        tasks.add(new Task("Futás"));
-        tasks.add(new Task("Alma vásárlása a kisboldban"));
-        tasks.add(new Task("Krisz felköszönt"));
-        tasks.add(new Task("Ajándékot venni"));
-        tasks.add(new Task("Jogsi"));
-        tasks.add(new Task("Szallagavató zene"));
-        tasks.add(new Task("Kiskutya"));
-        tasks.add(new Task("Kép nyomtat"));
-        tasks.add(new Task("Szervízbe vinni a kocsit"));
-        tasks.add(new Task("Fésülködés"));
-        tasks.add(new Task("Fogmosás"));
-        tasks.add(new Task("Gazsi felhív"));
+	private void loadFirstData() {
+		ArrayList<Task> tasks = new ArrayList<Task>();
+		ArrayList<Category> categories = new ArrayList<Category>();
+		
+        tasks.add(new Task(getResources().getString(R.string.sltd)));
+        tasks.add(new Task(getResources().getString(R.string.srtmd)));
+        tasks.add(new Task(getResources().getString(R.string.lpte)));
 
 		int[] catColors = getResources().getIntArray(R.array.categories);
-        categories.add(new Category("Munka",catColors[0]));
-        categories.add(new Category("Tanulás",catColors[1]));
-        categories.add(new Category("Család",catColors[2]));
-        categories.add(new Category("Szülinapok",catColors[3]));
-        categories.add(new Category("",catColors[4]));
+        categories.add(new Category(getResources().getString(R.string.starter),catColors[3]));
+        categories.add(new Category(getResources().getString(R.string.home),catColors[2]));
+        categories.add(new Category(getResources().getString(R.string.work),catColors[4]));
+        categories.add(new Category("",catColors[1]));
+        categories.add(new Category("",catColors[0]));
         categories.add(new Category("",catColors[5]));
         categories.add(new Category("",catColors[6]));
         categories.add(new Category("",catColors[7]));
@@ -411,18 +414,18 @@ public class TasksActivity extends Activity implements
         categories.add(new Category("",catColors[14]));
         categories.add(new Category("",catColors[15]));	
         
-        Random r = new Random();
 		for(Task idTask : tasks){
-			idTask.addToCategory(categories.get(r.nextInt(categories.size())));
+			idTask.addToCategory(categories.get(0));
 		}
-		
+        tasks.add(2,new Task(getResources().getString(R.string.pctf)));
+
 		SQLHelp.open();
 		SQLHelp.reset();
-		for(int i=0;i<DB.tasks.size();i++){
-			SQLHelp.addTask(DB.tasks.get(i));
+		for(int i=0;i<tasks.size();i++){
+			SQLHelp.addTask(tasks.get(i));
 		}
-		for(int i=0;i<DB.categories.size();i++){
-			SQLHelp.addCategory(DB.categories.get(i));
+		for(int i=0;i<categories.size();i++){
+			SQLHelp.addCategory(categories.get(i));
 		}
 		SQLHelp.close();
     }

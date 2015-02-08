@@ -19,5 +19,12 @@
     <string name="name">Name</string>
     <string name="search">Search</string>
     <string name="select_cat_first">You have to select a category first!</string>
+    <string name="sltd">Swipe left to dismiss</string>
+    <string name="srtmd">Swipe right to mark Done</string>
+    <string name="lpte">Long press a category to edit</string>
+    <string name="pctf">Press a category to filter tasks</string>
+    <string name="home">Home</string>
+    <string name="work">Work</string>
+    <string name="starter">Starter</string>
 
 </resources>
