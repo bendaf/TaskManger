@@ -83,7 +83,7 @@ public class TasksActivity extends Activity implements
 		// Initialize database and shared preferences
 		SQLHelp = new SQLiteHelper(getApplicationContext());
 		mPrefs = getSharedPreferences("hu.trio.taskmanager", MODE_PRIVATE); 
-//        mPrefs.edit().putBoolean("firstrun", true).commit();
+        mPrefs.edit().putBoolean("firstrun", true).commit();
 		
         // Setup categories and tutorial
 		if (mPrefs.getBoolean("firstrun", true)) {
