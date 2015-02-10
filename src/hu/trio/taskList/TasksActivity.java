@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.devsmart.android.ui.HorizontalListView;
@@ -126,6 +127,10 @@ public class TasksActivity extends Activity implements
 		
 		/// search Button
 		btnSearch = (Button) findViewById(R.id.btn_right);
+		btnSearch.setOnClickListener(this);
+		
+		/// google Button
+		btnSearch = (Button) findViewById(R.id.btn_left);
 		btnSearch.setOnClickListener(this);
 		
 		/// listView of Tasks
@@ -231,7 +236,9 @@ public class TasksActivity extends Activity implements
 			}
 			break;
 
-		default:
+		case R.id.btn_left:
+			Toast.makeText(getApplicationContext(), getResources().getString(R.string.under_const),
+					   Toast.LENGTH_LONG).show();
 			break;
 		}
 	}

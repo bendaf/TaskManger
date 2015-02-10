@@ -25,5 +25,6 @@
     <string name="home">Home</string>
     <string name="work">Work</string>
     <string name="starter">Example</string>
+    <string name="under_const">Under Construction</string>
 
 </resources>

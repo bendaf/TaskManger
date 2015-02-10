@@ -25,5 +25,6 @@
     <string name="home">Otthoni</string>
     <string name="work">Munkahelyi</string>
     <string name="starter">Példa</string>
+    <string name="under_const">Fejlesztés alatt</string>
     
 </resources>
