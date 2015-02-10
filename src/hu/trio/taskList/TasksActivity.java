@@ -107,13 +107,14 @@ public class TasksActivity extends Activity implements
 				// When enter is pressed add task or search and the soft keyborad stays.
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
 					if(!isSearching){
+						if(!etAddNewTask.getText().toString().equals("")){
 							Task idTask = new Task(etAddNewTask.getText().toString());
 							if(currentCategory!=null)idTask.addToCategory(currentCategory);
 					        addTask(null, idTask);
 					        etAddNewTask.setText("");
 					        mTaskAdapter.notifyDataSetChanged();
 					        return true;
-						
+						}
 					}else{
 						onClick(btnSearch);
 						return true;
