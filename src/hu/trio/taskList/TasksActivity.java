@@ -195,6 +195,7 @@ public class TasksActivity extends Activity implements
 	public boolean onItemLongClick(AdapterView<?> parent, View v, int position, long id) {
 		// Starts the category edit Activity
 		Intent startCategoryEdit = new Intent(this, CategoryEditActivity.class);
+		startCategoryEdit.putExtra("Category", position);
 		startActivity(startCategoryEdit);
 		return true;
 	}

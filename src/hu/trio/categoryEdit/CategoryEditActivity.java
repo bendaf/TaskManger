@@ -57,7 +57,12 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
         etCategoryName.setOnKeyListener(this);
 		tlCategories = (TableLayout) findViewById(R.id.tl_categories);
 		mCatAdapter = new CategoryArrayAdapter(getApplicationContext(), mCategories);
-		drawTable();
+		int selcetedCategory = -1;
+		if(getIntent().hasExtra("Category")){
+			selcetedCategory = getIntent().getExtras().getInt("Category");
+		}
+
+		drawTable(selcetedCategory);
 	}
 
 	@Override
@@ -110,7 +115,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
     		    SQLHelp.modifyCategory(idCategory);
     		    SQLHelp.close();
 	            mCatAdapter.notifyDataSetChanged();
-	            drawTable();
+	            drawTable(pos);
 			}catch(NullPointerException e){
 				Toast.makeText(getApplicationContext(), getResources().getString(R.string.select_cat_first),
 						   Toast.LENGTH_LONG).show();
@@ -121,7 +126,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 	}
 
 	// Redraw the table of the categories
-	private void drawTable(){
+	private void drawTable(int selected){
 		tlCategories.removeAllViews();
 		TableRow.LayoutParams rowParams=new TableRow.LayoutParams 
 				(TableRow.LayoutParams.WRAP_CONTENT,TableRow.LayoutParams.WRAP_CONTENT);
@@ -135,6 +140,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 				v.setTag(i*4+j);
 				v.setOnClickListener(this);
 				tr.addView(v);
+				if( i*4+j+1 == selected) onClick(v);
 			}
 			tlCategories.addView(tr);
 		}
