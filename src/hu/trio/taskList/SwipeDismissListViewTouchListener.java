@@ -262,13 +262,15 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 float velocityY = Math.abs(mVelocityTracker.getYVelocity());
                 boolean dismiss = false;
                 boolean dismissRight = false;
-                if (Math.abs(deltaX) > mViewWidth / 2) {
-                    dismiss = true;
-                    dismissRight = deltaX > 0;
-                } else if (mMinFlingVelocity <= velocityX && velocityX <= mMaxFlingVelocity
-                        && velocityY < velocityX) {
-                    dismiss = true;
-                    dismissRight = mVelocityTracker.getXVelocity() > 0;
+                if(mSwipeingView != null){
+	                if (Math.abs(deltaX) > mViewWidth / 2) {
+	                    dismiss = true;
+	                    dismissRight = deltaX > 0;
+	                } else if (mMinFlingVelocity <= velocityX && velocityX <= mMaxFlingVelocity
+	                        && velocityY < velocityX) {
+	                    dismiss = true;
+	                    dismissRight = mVelocityTracker.getXVelocity() > 0;
+	                }
                 }
                 if (dismiss) {
                 	if(!dismissRight){
