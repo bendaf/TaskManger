@@ -64,6 +64,7 @@ public class TasksActivity extends Activity implements
 	private EditText etAddNewTask;
 	private RelativeLayout rtlAddNewTask;
 	private Button btnSearch;
+	private Button btnGoogle;
 	
 	// State variables
 	//private Task currentTask = null;
@@ -130,8 +131,8 @@ public class TasksActivity extends Activity implements
 		btnSearch.setOnClickListener(this);
 		
 		/// google Button
-		btnSearch = (Button) findViewById(R.id.btn_left);
-		btnSearch.setOnClickListener(this);
+		btnGoogle = (Button) findViewById(R.id.btn_left);
+		btnGoogle.setOnClickListener(this);
 		
 		/// listView of Tasks
 		lvTask = (ListView) findViewById(R.id.lv_tasks);
