@@ -219,11 +219,12 @@ public class SQLiteHelper {
 			String[] sel = {Long.toString(c.getLong(idRow))};
 			Cursor c2=ourDatabase.query(DATABASE_CONNECTION,columns2,
 				CONNECTION_TASK_ID + " = ? ",sel,null,null,null);
-//			if(c2.isNull(0))break;
+			//if(c2 == null || c2.isNull(0))break;
 			for(c2.moveToFirst();!c2.isAfterLast();c2.moveToNext()){
 				Category idle=find(categories,(c2.getInt(c2.getColumnIndex(CONNECTION_CATEGORY_COLOR))));
 				if(idle!=null)category.add(idle);
 			}
+			c2.close();
 			if(parent!=null)parent.addSubTask(new Task(c.getLong(idRow),
 					c.getString(titleRow),category,c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
@@ -236,6 +237,7 @@ public class SQLiteHelper {
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)),
 					c.getLong(childTime) == 0 ? null : new Date(c.getLong(childTime))));
 		}
+		c.close();
 		return tasks;
 	}
 	public ArrayList<Category> getCategorys() {
@@ -252,6 +254,7 @@ public class SQLiteHelper {
             		   Color.blue((int)c.getLong(colorRow)));
             categorys.add(u);
         }
+        c.close();
 		return categorys;
 	}
 }
