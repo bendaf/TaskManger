@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -22,6 +24,7 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.LayoutParams;
@@ -171,7 +174,6 @@ public class TasksActivity extends Activity implements
 		lvTask.setOnScrollListener(touchListener.makeScrollListener());
 		
 		
-		
 		/// ListView of Category 
         lvCategory = (HorizontalListView) findViewById(R.id.lv_categories);
 		mCategoryAdapter = new CategoryArrayAdapter(getApplicationContext(), LD.categories);
@@ -203,17 +205,26 @@ public class TasksActivity extends Activity implements
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+		animateTaskListOut(new AnimatorListener() {
+			public void onAnimationStart(Animator animation) {}
+			public void onAnimationRepeat(Animator animation) {}
+			public void onAnimationCancel(Animator animation) {}
+			@Override
+			public void onAnimationEnd(Animator animation) {
+				// Refresh the view
+				refreshTaskList();
+				mTaskAdapter.notifyDataSetChanged();
+				refreshAddNewTaskRTL();
+				animateTaskListIn();
+			}
+			
+		});
 		// Change the current category
 		if(position < 1){
 			currentCategory = null;
 		}else{
 			currentCategory = mCategoryAdapter.getItem(position);
 		}
-		
-		// Refresh the view
-		refreshTaskList();
-		mTaskAdapter.notifyDataSetChanged();
-		refreshAddNewTaskRTL();
 	}
 
 	@Override
@@ -227,20 +238,32 @@ public class TasksActivity extends Activity implements
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.showSoftInput(etAddNewTask, InputMethodManager.SHOW_IMPLICIT);
 			}else{						// If searching then search on the string
-				String searchString = etAddNewTask.getText().toString();
-				refreshTaskList();
-				Iterator<Task> itask = LD.tasks.iterator();
-				while(itask.hasNext()){
-					Task idTask = itask.next();
-					if(!containsIgnoreCase(idTask.getTitle(),searchString)) itask.remove();
-				}
-				mTaskAdapter.notifyDataSetChanged();
+				animateTaskListOut(new AnimatorListener() {
+					public void onAnimationStart(Animator animation) {}
+					public void onAnimationRepeat(Animator animation) {}
+					public void onAnimationCancel(Animator animation) {}
+					@Override
+					public void onAnimationEnd(Animator animation) {
+						String searchString = etAddNewTask.getText().toString();
+						refreshTaskList();
+						Iterator<Task> itask = LD.tasks.iterator();
+						while(itask.hasNext()){
+							Task idTask = itask.next();
+							if(!containsIgnoreCase(idTask.getTitle(),searchString)) itask.remove();
+						}
+						mTaskAdapter.notifyDataSetChanged();
+						animateTaskListIn();
+					}
+				});
 			}
 			break;
 
 		case R.id.btn_left:
 			Toast.makeText(getApplicationContext(), getResources().getString(R.string.under_const),
 					   Toast.LENGTH_LONG).show();
+			break;
+			
+		default:
 			break;
 		}
 	}
@@ -439,6 +462,16 @@ public class TasksActivity extends Activity implements
 		}
 		SQLHelp.close();
     }
+	
+	private void animateTaskListOut(AnimatorListener listener){
+		lvTask.animate().y(lvTask.getHeight())
+				.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime))
+				.setListener(listener);
+	}
+	private void animateTaskListIn(){
+		lvTask.animate().y(0)
+				.setDuration(getResources().getInteger(android.R.integer.config_shortAnimTime));
+	}
 }
 
 
