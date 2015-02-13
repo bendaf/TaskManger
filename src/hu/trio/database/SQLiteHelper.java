@@ -15,7 +15,7 @@ import android.graphics.Color;
 import android.util.Log;
 
 public class SQLiteHelper {
-	/* A táblák oszlopainak neve. */
+	/* A tï¿½blï¿½k oszlopainak neve. */
 	public static final String TASK_ID = "id";
 	public static final String TASK_TITLE = "title";
 	public static final String TASK_DESCRIPTION = "description";
@@ -31,7 +31,7 @@ public class SQLiteHelper {
 	public static final String CONNECTION_ID = "id";
 	public static final String CONNECTION_TASK_ID = "taskId";
 	public static final String CONNECTION_CATEGORY_COLOR = "categoryColor";
-	/* Az adatbázis és táblák. */
+	/* Az adatbï¿½zis ï¿½s tï¿½blï¿½k. */
 	private static final String DATABASE_NAME = "Database";
 	private static final String DATABASE_TASKS = "Tasks";
 	private static final String DATABASE_CATEGORY = "Category";
@@ -42,7 +42,7 @@ public class SQLiteHelper {
 	private final Context ourContext;
 	private SQLiteDatabase ourDatabase;
 	
-	/* Az sql parancsok használatához. */
+	/* Az sql parancsok hasznï¿½latï¿½hoz. */
 	
 	private static class DbHelper extends SQLiteOpenHelper{
 
@@ -121,7 +121,7 @@ public class SQLiteHelper {
         	ArrayList<Category> categorys=task.getCategories();
         	for(int i=0;i<categorys.size();i++){
         		if(addConnection(task,categorys.get(i)) == -1){
-        			Log.d("erdekel", "Nem sikerült a kapcsolat létrehozása!");
+        			Log.d("erdekel", "Nem sikerï¿½lt a kapcsolat lï¿½trehozï¿½sa!");
         		};
         	}
         }
@@ -156,7 +156,7 @@ public class SQLiteHelper {
     	else cvUpdate.put(TASK_CHILDREQTIME,"0");
 		ourDatabase.update(DATABASE_TASKS, cvUpdate, TASK_ID + "=" + task.getId(),null);
 	}
-    public void modifyCategory(Category cat){// színt lehet-e utólag változtatni vagy csak a nevét.
+    public void modifyCategory(Category cat){// szï¿½nt lehet-e utï¿½lag vï¿½ltoztatni vagy csak a nevï¿½t.
       ContentValues cvUpdate = new ContentValues();
       cvUpdate.put(CATEGORY_TITLE, cat.getTitle());
       cvUpdate.put(CATEGORY_COLOR, cat.getColor());
@@ -196,7 +196,7 @@ public class SQLiteHelper {
 		return null;
 	}
 	public ArrayList<Task> getTasks(ArrayList<Category> categories) {
-		ArrayList<Task> tasks=new ArrayList<>();
+		ArrayList<Task> tasks=new ArrayList<Task>();
 		String[] columns=new String[]{TASK_ID,TASK_TITLE,TASK_DESCRIPTION,
 				TASK_ENDDATE,TASK_ISDONE,TASK_LASTISDONE,TASK_PARENT,TASK_REQUIREDTIME,TASK_CHILDREQTIME};
 		Cursor c = ourDatabase.query(DATABASE_TASKS,columns,null,null,null,null,null);
@@ -210,7 +210,7 @@ public class SQLiteHelper {
 		int reqTimeRow=c.getColumnIndex(TASK_REQUIREDTIME);
 		int childTime=c.getColumnIndex(TASK_CHILDREQTIME);
 		for(c.moveToFirst();!c.isAfterLast();c.moveToNext()){
-			Task parent=null;//A szülõ megkeresése. felételezzük, hogy már szerepel az adatbázisban.
+			Task parent=null;//A szï¿½lï¿½ megkeresï¿½se. felï¿½telezzï¿½k, hogy mï¿½r szerepel az adatbï¿½zisban.
 			for(int i=0;i<tasks.size();i++){
                 parent=checkParent(tasks.get(i),c.getLong(parentRow));
 			}
@@ -241,7 +241,7 @@ public class SQLiteHelper {
 		return tasks;
 	}
 	public ArrayList<Category> getCategorys() {
-		ArrayList<Category> categorys=new ArrayList<>();
+		ArrayList<Category> categorys=new ArrayList<Category>();
         String[] columns=new String[]{CATEGORY_TITLE,CATEGORY_COLOR};
         Cursor c = ourDatabase.query(DATABASE_CATEGORY,columns,null,null,null,null,null);
         int titleRow=c.getColumnIndex(CATEGORY_TITLE);

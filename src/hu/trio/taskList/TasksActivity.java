@@ -57,8 +57,8 @@ public class TasksActivity extends Activity implements
 	
 	// This contains the tasks and the categories
 	private static final class LD{
-		static ArrayList<Category> categories = new ArrayList<>();
-		static ArrayList<Task> tasks = new ArrayList<>();
+		static ArrayList<Category> categories = new ArrayList<Category>();
+		static ArrayList<Task> tasks = new ArrayList<Task>();
 	}
 	
 	// private views
@@ -393,7 +393,7 @@ public class TasksActivity extends Activity implements
 	
 	// Return with the tasks in category
 	protected ArrayList<Task> getTasksOfCategory(Task parentTask, Category cat){
-		ArrayList<Task> reqCat = new ArrayList<>();
+		ArrayList<Task> reqCat = new ArrayList<Task>();
 		if(parentTask == null){
 			for(Task idTask : LD.tasks){
 				reqCat.addAll(getTasksOfCategory(idTask, cat));

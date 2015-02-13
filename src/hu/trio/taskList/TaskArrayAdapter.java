@@ -112,7 +112,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    ArrayList<Category> categoriesOfTask = mTaskList.get(position).getCategories();
 	    if(categoriesOfTask.size()>0){
 	    	if(categoriesOfTask.size()>1){
-	    		List<Integer> colorArray = new ArrayList<>();
+	    		List<Integer> colorArray = new ArrayList<Integer>();
 		    	for(Category idCategory : categoriesOfTask){
 		    		if(!idCategory.getTitle().equals(""))
 		    			colorArray.add(isDone ? idCategory.getDarkerColor() : idCategory.getColor());

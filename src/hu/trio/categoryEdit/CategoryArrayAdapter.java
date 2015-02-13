@@ -39,8 +39,8 @@ public class CategoryArrayAdapter extends BaseAdapter {
 	
 	//private fields
 	private LayoutInflater inflater;
-	private ArrayList<Category> categories = new ArrayList<>(); 
-	private ArrayList<Integer> reservedCategories = new ArrayList<>();
+	private ArrayList<Category> categories = new ArrayList<Category>();
+	private ArrayList<Integer> reservedCategories = new ArrayList<Integer>();
 	private Category all;
 
 	public CategoryArrayAdapter(Context context, ArrayList<Category> categories) {
