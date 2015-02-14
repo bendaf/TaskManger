@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -73,10 +74,6 @@ import com.nineoldandroids.animation.ValueAnimator;
  * <p>This class Requires API level 12 or later due to use of {@link
  * android.view.ViewPropertyAnimator}.</p>
  *
- * <p>For a generalized {@link android.view.View.OnTouchListener} that makes any view dismissable,
- * see {@link SwipeDismissTouchListener}.</p>
- *
- * @see SwipeDismissTouchListener
  */
 public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values
@@ -243,7 +240,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                     	setAlpha(mSwipeingView, Math.max(0f, Math.min(1f,
                     			1f - 2f * Math.abs(deltaX) / mViewWidth)));
                     else if(deltaX>0 && deltaX < mViewWidth / 2){
-                	    
+                	    //TODO
                     }
                     return true;
                 }
@@ -317,7 +314,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
         }
 
         @Override
-        public int compareTo(PendingDismissData other) {
+        public int compareTo(@NonNull PendingDismissData other) {
             // Sort by descending position
             return other.position - position;
         }

@@ -82,7 +82,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	        
 	    //Set taskitem's fields
 	    ///Set title
-	    taskView.tvTaskTitle.setText(mTaskList.get(position).getTitle().toString());
+	    taskView.tvTaskTitle.setText(mTaskList.get(position).getTitle());
 	    
 	    ///Set endDate
 	    try{ 

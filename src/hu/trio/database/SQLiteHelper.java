@@ -12,7 +12,6 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
-import android.util.Log;
 
 public class SQLiteHelper {
 	/* A t�bl�k oszlopainak neve. */
@@ -120,9 +119,7 @@ public class SQLiteHelper {
         if(task.getCategories()!=null){
         	ArrayList<Category> categorys=task.getCategories();
         	for(int i=0;i<categorys.size();i++){
-        		if(addConnection(task,categorys.get(i)) == -1){
-        			Log.d("erdekel", "Nem siker�lt a kapcsolat l�trehoz�sa!");
-        		};
+        		addConnection(task,categorys.get(i));
         	}
         }
 		return ourDatabase.insert(DATABASE_TASKS, null, cv);
@@ -174,7 +171,7 @@ public class SQLiteHelper {
                 " AND " +CATEGORY_COLOR + "=" + cat.getColor(), null);
     }
     private Task checkParent(Task t,long id){
-        Task parent=null;
+        Task parent;
         if(t.getId()!=id){
             if(t.getSubTasks()==null)return null;
             else{
@@ -210,7 +207,7 @@ public class SQLiteHelper {
 		int reqTimeRow=c.getColumnIndex(TASK_REQUIREDTIME);
 		int childTime=c.getColumnIndex(TASK_CHILDREQTIME);
 		for(c.moveToFirst();!c.isAfterLast();c.moveToNext()){
-			Task parent=null;//A sz�l� megkeres�se. fel�telezz�k, hogy m�r szerepel az adatb�zisban.
+			Task parent=null;
 			for(int i=0;i<tasks.size();i++){
                 parent=checkParent(tasks.get(i),c.getLong(parentRow));
 			}
@@ -228,12 +225,12 @@ public class SQLiteHelper {
 			if(parent!=null)parent.addSubTask(new Task(c.getLong(idRow),
 					c.getString(titleRow),category,c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
-					c.getInt(isDone) ==0 ? false : true, parent, new ArrayList<Task>(), 
+                    c.getInt(isDone) != 0, c.getInt(lastIsDone) != 0, parent, new ArrayList<Task>(),
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)), null));
 			else tasks.add(new Task(c.getLong(idRow),
 					c.getString(titleRow),category,c.getString(descriptionRow),
 					c.getLong(endDateRow) == 0 ? null : new Date(c.getLong(endDateRow)),
-					c.getInt(isDone) ==0 ? false : true, parent, new ArrayList<Task>(), 
+                    c.getInt(isDone) != 0, c.getInt(lastIsDone) != 0, null, new ArrayList<Task>(),
 					c.getLong(reqTimeRow) == 0 ? null : new Date(c.getLong(reqTimeRow)),
 					c.getLong(childTime) == 0 ? null : new Date(c.getLong(childTime))));
 		}

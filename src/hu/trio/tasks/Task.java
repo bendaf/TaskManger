@@ -26,17 +26,17 @@ public class Task {
 	private boolean isDone;
 	private final Task parentTask;
 	private ArrayList<Task> subTasks;
-	private Date requiredTime; // 0 perc = 1970, Január 01. 1ó 0p 0mp
+	private Date requiredTime; // 0 perc = 1970, Januï¿½r 01. 1ï¿½ 0p 0mp
 	private Date childReqTime; 
 	
 	static{
 		Calendar c = Calendar.getInstance();
 		counter = c.getTimeInMillis();
 	}
-	
-	public Task(long id, String title, ArrayList<Category> categories, String description, 
-			    Date endDate, boolean isDone, Task parentTask, ArrayList<Task> subTasks,
-			    Date requiredTime, Date childRequiredTime){
+
+	public Task(long id, String title, ArrayList<Category> categories, String description,
+			    Date endDate, boolean isDone, boolean lastIsDone, Task parentTask,
+                ArrayList<Task> subTasks, Date requiredTime, Date childRequiredTime){
 		
 		this.id = id;
 		this.title = title;
@@ -44,6 +44,7 @@ public class Task {
 		this.description = description;
 		this.endDate = endDate;
 		this.isDone = isDone;
+        this.lastIsDone = lastIsDone;
 		this.parentTask = parentTask;
 		this.subTasks = subTasks;
 		this.requiredTime = requiredTime;
@@ -60,13 +61,13 @@ public class Task {
 
 	public Task(Task task){
 		this(task.getId(),task.getTitle(),task.getCategories(),task.getDescription(),
-		     task.getEndDate(),task.isDone,task.getParentTask(),task.getSubTasks(),
+		     task.getEndDate(),task.isDone, task.lastIsDone, task.getParentTask(),task.getSubTasks(),
 		     task.getRequiredTime(),task.childReqTime);
 	}
 	
 	public Task(String title, Task parentTask){
 		this(counter++, title, new ArrayList<Category>(), null, 
-			 null, false, parentTask, new ArrayList<Task>(), 
+			 null, false, false, parentTask, new ArrayList<Task>(),
 			 null, null);
 	}
 	
@@ -75,7 +76,7 @@ public class Task {
 	}
 	
 	public long getId() {
-		return Long.valueOf(id);
+		return id;
 	}
 	public void addToCategory(Category cat){
 		categories.add(cat);
@@ -118,7 +119,7 @@ public class Task {
 		return subTasks.remove(subTask);
 	}
 	public String getTitle() {
-		return new String(title);
+		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
@@ -128,7 +129,7 @@ public class Task {
 	 */
 	public String getDescription() {
 		try{
-			return new String(description);
+			return description;
 		}catch (NullPointerException e) {
 			return null;
 		}
@@ -149,7 +150,7 @@ public class Task {
 		this.endDate = endDate;
 	}
 	public boolean isDone() {
-		return Boolean.valueOf(isDone);
+		return isDone;
 	}
 	public void setDone(boolean isDone) {
 		lastIsDone = this.isDone;

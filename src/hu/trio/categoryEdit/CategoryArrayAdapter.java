@@ -83,17 +83,15 @@ public class CategoryArrayAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.category_item, parent, false);
             categoryView = new VH();
             categoryView.tvTitle = (TextView) convertView.findViewById(R.id.tv_categoryTitle);
-            categoryView.vInnerCircle = (View) convertView.findViewById(R.id.v_categoryInnerCircle);
-            categoryView.vOuterCircle = (View) convertView.findViewById(R.id.v_categoryOuterCircle);
+            categoryView.vInnerCircle = convertView.findViewById(R.id.v_categoryInnerCircle);
+            categoryView.vOuterCircle = convertView.findViewById(R.id.v_categoryOuterCircle);
             convertView.setTag(categoryView);
 
-        } else {
-        	categoryView = (VH) convertView.getTag();
-        }
+        } else categoryView = (VH) convertView.getTag();
 		
 		//Set the properties of the category view
 		try{
-			categoryView.tvTitle.setText(categories.get(position).getTitle().toString());
+			categoryView.tvTitle.setText(categories.get(position).getTitle());
 			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
 			GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
 			setCategoryColor(iCircle, oCircle, categories.get(position).getColor());	
@@ -101,7 +99,7 @@ public class CategoryArrayAdapter extends BaseAdapter {
 			GradientDrawable iCircle = (GradientDrawable)categoryView.vInnerCircle.getBackground();
 			GradientDrawable oCircle = (GradientDrawable)categoryView.vOuterCircle.getBackground();
 			if(position == - 1 ){
-				categoryView.tvTitle.setText(all.getTitle().toString());
+				categoryView.tvTitle.setText(all.getTitle());
 				setCategoryColor(iCircle, oCircle, all.getColor());
 			}else{
 				categoryView.tvTitle.setText("");

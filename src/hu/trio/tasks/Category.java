@@ -22,13 +22,13 @@ public class Category {
 		this.color=color;
 	}
 	public String getTitle() {
-		return new String(title);
+		return title;
 	}
 	public void setTitle(String title) {
 		this.title = title;
 	}
 	public int getColor() {
-		return Integer.valueOf(color);
+		return color;
 	}
 	public int getDarkerColor() {
 		return darkerColor(this.color);
@@ -47,7 +47,7 @@ public class Category {
 	public static int darkerColor(int color){
 		try {
 			color = darkerColor(color,0.8f);
-		} catch (FormatException e) {}
+		} catch (FormatException ignored) {}
 		return color;
 	}
 	/**
