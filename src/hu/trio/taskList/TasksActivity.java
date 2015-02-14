@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
@@ -115,7 +114,6 @@ public class TasksActivity extends Activity implements
                 // When enter is pressed add task or search and the soft keyborad stays.
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if(!isSearching){
-                        Log.d("erdekel","ddd" );
                         if(!etAddNewTask.getText().toString().equals("")){
                             Task idTask = new Task(etAddNewTask.getText().toString());
                             if(currentCategory!=null)idTask.addToCategory(currentCategory);
@@ -311,7 +309,6 @@ public class TasksActivity extends Activity implements
      * You have to notify the adapter from the changes
      */
     public void refreshTaskList() {
-        Log.d("erdekel","RefreshTaskList");
         SQLHelp.open();
         ArrayList<Task> idTasks = SQLHelp.getTasks(LD.categories);
         SQLHelp.close();

@@ -69,8 +69,8 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 	public void onClick(View v) {
 		
 		// Select and change the shape of the clicked category and change back the shape of the previous. 
-		int tag = -1;
-		try{
+		int tag;
+        try{
 			tag = (Integer) v.getTag();
 			selectCategory(tag);
 			if(vSelected != null)
@@ -86,7 +86,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 
 	// Change the shape of the view to the color
 	private void changeBackgroundOfView(View v, int color) {
-			View outerCircle = (View) v.findViewById(R.id.v_categoryOuterCircle);
+			View outerCircle = v.findViewById(R.id.v_categoryOuterCircle);
 			GradientDrawable oCircle = (GradientDrawable) outerCircle.getBackground();
 			oCircle.mutate();
 			oCircle.setColor(color);
