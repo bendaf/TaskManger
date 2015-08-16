@@ -6,7 +6,6 @@
     android:background="@drawable/rounded_button">
     
     <TextView android:id="@+id/tv_taskTitle"
-        android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
@@ -20,23 +19,19 @@
 
     <TextView android:id="@+id/tv_taskEndDate"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
         android:textColor="@android:color/white"
         android:layout_marginEnd="5dp"/>
     
     <TextView android:id="@+id/tv_taskReqTime"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
         android:textColor="@android:color/white"
         android:layout_marginEnd="5dp"/>
 </RelativeLayout>

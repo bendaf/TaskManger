@@ -25,7 +25,7 @@ import android.widget.TextView;
  * @author bendaf
  *
  */
-public class TaskArrayAdapter extends BaseAdapter {
+class TaskArrayAdapter extends BaseAdapter {
 
 	/**
 	 * This ViewHolder contains the views of a task.
@@ -172,7 +172,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	 * @param integers the list of integer.
 	 * @return an int array
 	 */
-	public static int[] convertIntegers(List<Integer> integers)
+	private static int[] convertIntegers(List<Integer> integers)
 	{
 	    int[] ret = new int[integers.size()];
 	    Iterator<Integer> iterator = integers.iterator();
