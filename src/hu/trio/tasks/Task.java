@@ -7,7 +7,7 @@ import java.util.Date;
 import android.util.Log;
 
 /**
- * This object represetn a task what have a lot of properties:  id, title, description, 
+ * This object represent a task what have a lot of properties:  id, title, description,
  * {@link hu.trio.tasks.Category}s, endDate, isDone, parentTask, subTasks, requiredTime.
  * You can access to this properties with this class. 
  * 
@@ -19,15 +19,15 @@ public class Task {
 	private static long counter;
 	private final long id;
 	private String title;
-	private ArrayList<Category> categories;
+	private final ArrayList<Category> categories;
 	private String description;
 	private Date endDate;
 	private boolean lastIsDone;
 	private boolean isDone;
 	private final Task parentTask;
-	private ArrayList<Task> subTasks;
-	private Date requiredTime; // 0 perc = 1970, Janu�r 01. 1� 0p 0mp
-	private Date childReqTime; 
+	private final ArrayList<Task> subTasks;
+	private Date requiredTime; // 0 perc = 1970, Január 01. 1ó 0p 0mp
+	private final Date childReqTime;
 	
 	static{
 		Calendar c = Calendar.getInstance();

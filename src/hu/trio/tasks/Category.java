@@ -55,9 +55,9 @@ public class Category {
 	 * @param color The source color.
 	 * @param ratio The ratio between 0 and 1. 0 is the black, and 1 is the same.
 	 * @return the darker color. 
-	 * @throws FormatException throwed when ratio is not between 0 and 1
+	 * @throws FormatException throw when ratio is not between 0 and 1
 	 */
-	public static int darkerColor(int color, float ratio) throws FormatException{
+	private static int darkerColor(int color, float ratio) throws FormatException{
 		if(ratio>1 || ratio<0) throw new FormatException("Ratio must be between 0 and 1");
 		float[] hsv = new float[3];
 		Color.colorToHSV(color, hsv);

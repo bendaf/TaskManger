@@ -75,20 +75,20 @@ import com.nineoldandroids.animation.ValueAnimator;
  * android.view.ViewPropertyAnimator}.</p>
  *
  */
-public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
+class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values
-    private int mSlop;
-    private int mMinFlingVelocity;
-    private int mMaxFlingVelocity;
-    private long mAnimationTime;
+    private final int mSlop;
+    private final int mMinFlingVelocity;
+    private final int mMaxFlingVelocity;
+    private final long mAnimationTime;
 
     // Fixed properties
-    private ListView mListView;
-    private OnSwipeCallback mCallback;
+    private final ListView mListView;
+    private final OnSwipeCallback mCallback;
     private int mViewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
     // Transient properties
-    private List<PendingDismissData> mPendingDismisses = new ArrayList<PendingDismissData>();
+    private final List<PendingDismissData> mPendingDismisses = new ArrayList<PendingDismissData>();
     private int mDismissAnimationRefCount = 0;
     private float mDownX;
     private boolean mSwiping;
@@ -96,7 +96,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     private int mDownPosition;
     private View mDownView;
     private boolean mPaused;
-	private int mfrontViewId;
+	private final int mFrontViewId;
 	private View mSwipeingView;
 
     /**
@@ -114,7 +114,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
          */
         void onDismiss(ListView listView, int[] reverseSortedPositions);
         /**
-         * Called when the user has indicated thez would like to set done or undone one list 
+         * Called when the user has indicated that would like to set done or undone one list
          * item position.
          * 
          * @param listView				The originating {@link ListView}.
@@ -140,7 +140,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 android.R.integer.config_shortAnimTime);
         mListView = listView;
         mCallback = callback;
-        mfrontViewId = frontViewId;
+        mFrontViewId = frontViewId;
     }
 
     /**
@@ -148,7 +148,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
      *
      * @param enabled Whether or not to watch for gestures.
      */
-    public void setEnabled(boolean enabled) {
+    private void setEnabled(boolean enabled) {
         mPaused = !enabled;
     }
 
@@ -205,7 +205,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 }
 
                 if (mDownView != null) {
-                    mSwipeingView= mDownView.findViewById(mfrontViewId);
+                    mSwipeingView= mDownView.findViewById(mFrontViewId);
                     mDownX = motionEvent.getRawX();
                     mDownPosition = mListView.getPositionForView(mDownView) - 1;
 
@@ -235,12 +235,14 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 }
 
                 if (mSwiping) {
-                    setTranslationX(mSwipeingView, deltaX);
-                    if(deltaX<0)
-                    	setAlpha(mSwipeingView, Math.max(0f, Math.min(1f,
-                    			1f - 2f * Math.abs(deltaX) / mViewWidth)));
-                    else if(deltaX>0 && deltaX < mViewWidth / 2){
-                	    //TODO
+                    if(mSwipeingView != null) {
+                        setTranslationX(mSwipeingView, deltaX);
+                        if(deltaX < 0){
+                            setAlpha(mSwipeingView, Math.max(0f, Math.min(1f,
+                                    1f - 2f*Math.abs(deltaX)/mViewWidth)));
+//                        }else if(deltaX > 0 && deltaX < mViewWidth/2) {
+                            //TODO
+                        }
                     }
                     return true;
                 }
@@ -272,7 +274,7 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
                 if (dismiss) {
                 	if(!dismissRight){
 	                    // dismiss
-	                    final View downView = mDownView; // mDownView gets null'd before animation ends
+	                    final View downView = mDownView; // mDownView gets null before animation ends
 	                    final int downPosition = mDownPosition;
 	                    ++mDismissAnimationRefCount;
 	                    animate(mSwipeingView).translationX(-mViewWidth).alpha(0)
@@ -305,8 +307,8 @@ public class SwipeDismissListViewTouchListener implements View.OnTouchListener {
     }
         
     class PendingDismissData implements Comparable<PendingDismissData> {
-        public int position;
-        public View view;
+        public final int position;
+        public final View view;
 
         public PendingDismissData(int position, View view) {
             this.position = position;

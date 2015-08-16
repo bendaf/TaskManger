@@ -45,7 +45,7 @@ import hu.trio.tasks.Task;
  * Displays the {@link hu.trio.tasks.Category}s, the {@link hu.trio.tasks.Task}s. 
  * The user can add new Tasks to the taskList, filter the tasks by categories, 
  * remove, set tasks done or they can search between tasks. 
- * There is a lot of possible funtion what is not implemented yet. 
+ * There is a lot of possible function what is not implemented yet.
  *
  * @author Felician
  *
@@ -90,17 +90,17 @@ public class TasksActivity extends Activity implements
         // Initialize database and shared preferences
         SQLHelp = new SQLiteHelper(getApplicationContext());
         SharedPreferences mPrefs = getSharedPreferences("hu.trio.taskmanager", MODE_PRIVATE);
-        mPrefs.edit().putBoolean("firstrun", true).commit();
+        mPrefs.edit().putBoolean("firstRun", true).commit();
 
         // Setup categories and tutorial
-        if (mPrefs.getBoolean("firstrun", true)) {
+        if (mPrefs.getBoolean("firstRun", true)) {
             loadFirstData();
-            mPrefs.edit().putBoolean("firstrun", false).apply();
+            mPrefs.edit().putBoolean("firstRun", false).apply();
         }
 
         // Load data from database
         SQLHelp.open();
-        LD.categories=SQLHelp.getCategorys();
+        LD.categories=SQLHelp.getCategories();
         LD.tasks=SQLHelp.getTasks(LD.categories);
         SQLHelp.close();
 
@@ -111,7 +111,7 @@ public class TasksActivity extends Activity implements
         etAddNewTask.setOnEditorActionListener(new OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                // When enter is pressed add task or search and the soft keyborad stays.
+                // When enter is pressed add task or search and the soft keyboard stays.
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if(!isSearching){
                         if(!etAddNewTask.getText().toString().equals("")){
@@ -144,8 +144,8 @@ public class TasksActivity extends Activity implements
         mTaskAdapter = new TaskArrayAdapter(getApplicationContext(), LD.tasks);
         lvTask.setAdapter(mTaskAdapter);
         lvTask.setOverScrollMode(ListView.OVER_SCROLL_NEVER);
-        lvTask.addHeaderView(transView(100)); // This header and foother are below the categorybar
-        lvTask.addFooterView(transView(60));  // and buttonbar.
+        lvTask.addHeaderView(transView(100)); // This header and footer are below the categoryBar
+        lvTask.addFooterView(transView(60));  // and buttonBar.
         SwipeDismissListViewTouchListener touchListener =
                 new SwipeDismissListViewTouchListener(lvTask,
                         new SwipeDismissListViewTouchListener.OnSwipeCallback() {
@@ -255,11 +255,11 @@ public class TasksActivity extends Activity implements
                                 if (!isTaskListFresh) {
                                     String searchString = etAddNewTask.getText().toString();
                                     refreshTaskList();
-                                    Iterator<Task> itask = LD.tasks.iterator();
-                                    while (itask.hasNext()) {
-                                        Task idTask = itask.next();
+                                    Iterator<Task> iTask = LD.tasks.iterator();
+                                    while (iTask.hasNext()) {
+                                        Task idTask = iTask.next();
                                         if (!containsIgnoreCase(idTask.getTitle(), searchString))
-                                            itask.remove();
+                                            iTask.remove();
                                     }
                                     mTaskAdapter.notifyDataSetChanged();
                                     animateTaskListIn();
@@ -296,10 +296,10 @@ public class TasksActivity extends Activity implements
      * Refresh the category list from database but not the view! 
      * You have to notify the adapter from the changes
      */
-    public void refreshCategoryList() {
+    private void refreshCategoryList() {
         SQLHelp.open();
         LD.categories.clear();
-        LD.categories.addAll(SQLHelp.getCategorys());
+        LD.categories.addAll(SQLHelp.getCategories());
         SQLHelp.close();
 
     }
@@ -308,15 +308,15 @@ public class TasksActivity extends Activity implements
      * Refresh the task list from database but not the view! 
      * You have to notify the adapter from the changes
      */
-    public void refreshTaskList() {
+    private void refreshTaskList() {
         SQLHelp.open();
         ArrayList<Task> idTasks = SQLHelp.getTasks(LD.categories);
         SQLHelp.close();
         if(currentCategory != null){
-            Iterator<Task> itask = idTasks.iterator();
-            while(itask.hasNext()){
-                Task idtask = itask.next();
-                if(!idtask.isInTheCategory(currentCategory))itask.remove();
+            Iterator<Task> iTask = idTasks.iterator();
+            while(iTask.hasNext()){
+                Task idTask = iTask.next();
+                if(!idTask.isInTheCategory(currentCategory))iTask.remove();
             }
         }
         LD.tasks.clear();
@@ -326,13 +326,13 @@ public class TasksActivity extends Activity implements
     /**
      *  Refresh the background of the AddNewTask RelativeLayout.
      */
-    public void refreshAddNewTaskRTL(){
+    private void refreshAddNewTaskRTL(){
         if(currentCategory != null){
             GradientDrawable shape = (GradientDrawable)rtlAddNewTask.getBackground();
             shape.mutate();
             shape.setColor(currentCategory.getColor());
         }else{
-            rtlAddNewTask.setBackground(getResources().getDrawable(R.drawable.roundedbutton));
+            rtlAddNewTask.setBackground(getResources().getDrawable(R.drawable.rounded_button));
         }
     }
 
@@ -343,7 +343,7 @@ public class TasksActivity extends Activity implements
      * @param searchString The searched string
      * @return True if the src contains the searchString
      */
-    public static boolean containsIgnoreCase(String src, String searchString) {
+    private static boolean containsIgnoreCase(String src, String searchString) {
         final int length = searchString.length();
         if (length == 0)
             return true; // Empty string is contained
@@ -366,7 +366,7 @@ public class TasksActivity extends Activity implements
     }
 
     // Add a the task to the database.
-    protected void addTask(Task parent, Task task){
+    private void addTask(Task parent, Task task){
         SQLHelp.open();
         SQLHelp.addTask(task);
         SQLHelp.close();
@@ -395,9 +395,9 @@ public class TasksActivity extends Activity implements
         ArrayList<Task> tasks = new ArrayList<Task>();
         ArrayList<Category> categories = new ArrayList<Category>();
 
-        tasks.add(new Task(getResources().getString(R.string.sltd)));
-        tasks.add(new Task(getResources().getString(R.string.srtmd)));
-        tasks.add(new Task(getResources().getString(R.string.lpte)));
+        tasks.add(new Task(getResources().getString(R.string.swipe_left_to_dismiss)));
+        tasks.add(new Task(getResources().getString(R.string.swipe_right_to_mark_done)));
+        tasks.add(new Task(getResources().getString(R.string.long_press_category_to_edit)));
 
 
         int[] catColors = getResources().getIntArray(R.array.categories);
@@ -421,7 +421,7 @@ public class TasksActivity extends Activity implements
         for(Task idTask : tasks){
             idTask.addToCategory(categories.get(0));
         }
-        tasks.add(2,new Task(getResources().getString(R.string.pctf)));
+        tasks.add(2,new Task(getResources().getString(R.string.press_category_to_filet_tasks)));
 
         SQLHelp.open();
         SQLHelp.reset();

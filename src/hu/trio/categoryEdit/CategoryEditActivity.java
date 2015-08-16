@@ -23,7 +23,7 @@ import android.widget.Toast;
 /**
  * This Activity manages the edition of the {@link hu.trio.tasks.Category}s. It has an 
  * {@link android.widget.EditText} and a {@link android.widget.TableLayout}. 
- * In the TableLeyout the user can choose a category and they can rename it with the EditText.
+ * In the TableLayout the user can choose a category and they can rename it with the EditText.
  * The categories without name doesn't appear in the {@link hu.trio.taskList.TasksActivity}.   
  * 
  * @author bendaf
@@ -49,7 +49,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 		// Load the categories from database 
 		SQLHelp = new SQLiteHelper(getApplicationContext());
 		SQLHelp.open();
-		this.mCategories=SQLHelp.getCategorys();
+		this.mCategories=SQLHelp.getCategories();
         SQLHelp.close();
         
         // Initialize views
@@ -92,7 +92,7 @@ public class CategoryEditActivity extends Activity implements OnClickListener, O
 			oCircle.setColor(color);
 	}
 	
-	// Set the text of the etcategoryName
+	// Set the text of the etCategoryName
 	private void selectCategory(int pos){
 		try{
 			etCategoryName.setText(mCategories.get(pos).getTitle());

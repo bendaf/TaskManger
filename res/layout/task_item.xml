@@ -3,7 +3,7 @@
     android:id="@+id/rtl_taskItem"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_height"
-    android:background="@drawable/roundedbutton">
+    android:background="@drawable/rounded_button">
     
     <TextView android:id="@+id/tv_taskTitle"
         android:layout_alignParentLeft="true"

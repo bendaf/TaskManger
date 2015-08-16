@@ -35,13 +35,13 @@ public class CategoryArrayAdapter extends BaseAdapter {
 	}
 	
 	// this array contains the category colors
-	public int[] catColors;
+	private final int[] catColors;
 	
 	//private fields
-	private LayoutInflater inflater;
+	private final LayoutInflater inflater;
 	private ArrayList<Category> categories = new ArrayList<Category>();
-	private ArrayList<Integer> reservedCategories = new ArrayList<Integer>();
-	private Category all;
+	private final ArrayList<Integer> reservedCategories = new ArrayList<Integer>();
+	private final Category all;
 
 	public CategoryArrayAdapter(Context context, ArrayList<Category> categories) {
 		inflater = LayoutInflater.from(context);

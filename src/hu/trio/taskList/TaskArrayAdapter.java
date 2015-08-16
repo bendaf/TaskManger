@@ -40,11 +40,11 @@ public class TaskArrayAdapter extends BaseAdapter {
 	}
 	
 	private ArrayList<Task> mTaskList = new ArrayList<Task>();
-	private Context mcontext;
+	private final Context mContext;
 	
 	public TaskArrayAdapter(Context context, ArrayList<Task> tasks) {
 		mTaskList = tasks;
-        this.mcontext = context;
+        this.mContext = context;
 		
 	}
 	@Override
@@ -67,7 +67,7 @@ public class TaskArrayAdapter extends BaseAdapter {
         VH taskView = new VH();
 	    if (convertView == null) {
 			// Load a layout with the layout inflater
-			LayoutInflater inflater = (LayoutInflater) mcontext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			convertView = inflater.inflate(R.layout.task_item, parent, false);
 			
 			// Set the views of the list item
@@ -80,7 +80,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    	taskView = (VH) convertView.getTag();
 	    }
 	        
-	    //Set taskitem's fields
+	    //Set taskItem's fields
 	    ///Set title
 	    taskView.tvTaskTitle.setText(mTaskList.get(position).getTitle());
 	    
@@ -90,9 +90,9 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    	if(now.getTime() < mTaskList.get(position).getEndDate().getTime()){
 	    		long diff = mTaskList.get(position).getEndDate().getTime() - now.getTime();
 	    		taskView.tvTaskEndDate.setText(
-	    				formatDate(new Date(diff),mcontext.getResources().getString(R.string.remaining)));
+	    				formatDate(new Date(diff), mContext.getResources().getString(R.string.remaining)));
 	    	}else{
-	    		taskView.tvTaskEndDate.setText(mcontext.getResources().getString(R.string.expired));
+	    		taskView.tvTaskEndDate.setText(mContext.getResources().getString(R.string.expired));
 	    	}
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskEndDate.setText("");
@@ -101,7 +101,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    ///Set requiredTime
 	    try{
 	    	taskView.tvTaskReqTime.setText(formatDate(mTaskList.get(position).getRequiredTime(),
-	    								   mcontext.getResources().getString(R.string.task_req_time)));
+					mContext.getResources().getString(R.string.task_req_time)));
 	    }catch(NullPointerException e){
 	    	taskView.tvTaskReqTime.setText("");
 	    }
@@ -146,22 +146,22 @@ public class TaskArrayAdapter extends BaseAdapter {
 		String month = 
 				cal.get(Calendar.MONTH)>0 ? 
 						Integer.toString(cal.get(Calendar.MONTH) + 1) + " " + 
-						mcontext.getResources().getString(R.string.month) + " " : "";
+						mContext.getResources().getString(R.string.month) + " " : "";
 //		Log.i("erdekel", "mo: " + Integer.toString(cal.get(Calendar.MONTH)));
 		String day =
 				cal.get(Calendar.DAY_OF_MONTH) > 1 ?
 						Integer.toString(cal.get(Calendar.DAY_OF_MONTH) - 1) + 
-						" " + mcontext.getResources().getString(R.string.day) + " " : "";
+						" " + mContext.getResources().getString(R.string.day) + " " : "";
 //		Log.i("erdekel", "d: " + Integer.toString(cal.get(Calendar.DAY_OF_MONTH)));
 		String hour = 
 				cal.get(Calendar.HOUR_OF_DAY) > 1 ? 
 						Integer.toString(cal.get(Calendar.HOUR_OF_DAY) - 1) + 
-						" " + mcontext.getResources().getString(R.string.hour) + " " : "";
+						" " + mContext.getResources().getString(R.string.hour) + " " : "";
 //		Log.i("erdekel", "h: " + Integer.toString(cal.get(Calendar.HOUR_OF_DAY)));
 		String minute =
 				cal.get(Calendar.MINUTE) > 0 ? 
 						Integer.toString(cal.get(Calendar.MINUTE)) + " " + 
-						mcontext.getResources().getString(R.string.minute) + " " : "";
+						mContext.getResources().getString(R.string.minute) + " " : "";
 //		Log.i("erdekel", "mi: " +Integer.toString(cal.get(Calendar.MINUTE)));
 		String together = month + day + hour + minute; 
 		return together.isEmpty() ? "" : together + comment;
@@ -178,7 +178,7 @@ public class TaskArrayAdapter extends BaseAdapter {
 	    Iterator<Integer> iterator = integers.iterator();
 	    for (int i = 0; i < ret.length; i++)
 	    {
-	        ret[i] = iterator.next().intValue();
+	        ret[i] = iterator.next();
 	    }
 	    return ret;
 	}
